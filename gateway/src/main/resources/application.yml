@@ -1,0 +1,46 @@
+server:
+  port: 9000
+
+spring:
+  application:
+    name: sp-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: sp_product_route
+          #uri: http://localhost:9001
+          # get from Eureka server
+          uri: lb://sp-product-service
+          predicates:
+            - Path=/productService/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: psFallback
+                fallbackUri: forward:/productServiceFallback
+        - id: sp_user_route
+          #uri: http://localhost:9002/
+          uri: lb://sp-user-service
+          predicates:
+            - Path=/userService/**
+        - id: sp_order_route
+          #uri: http://localhost:9003/
+          uri: lb://sp-order-service
+          predicates:
+            - Path=/orderService/**
+        - id: sp_payment_route
+          #uri: http://localhost:9004/
+          uri: lb://sp-payment-service
+          predicates:
+            - Path=/paymentService/**
+      default-filters:
+        - name: CircuitBreaker
+          args:
+            name: globalFallback
+            fallbackUri: forward:/defaultFallback
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true

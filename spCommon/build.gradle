@@ -1,0 +1,19 @@
+plugins {
+	id 'java'
+}
+
+group = 'xyz.defe.sp'
+version = '0.0.1-SNAPSHOT'
+
+repositories {
+	mavenCentral()
+	maven { url 'https://repo.spring.io/milestone' }
+}
+
+dependencies {
+	implementation 'com.google.code.gson:gson:+'
+	implementation 'org.springframework:spring-web:5.3.8'
+	implementation 'org.springframework.data:spring-data-redis:2.4.3'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.4.0'
+}
+

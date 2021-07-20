@@ -1,0 +1,56 @@
+server:
+  port: 9003
+  servlet:
+    context-path: /orderService
+spring:
+  application:
+    name: sp-order-service
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: jdbc:postgresql://localhost/sp-order
+    username: postgres
+    password: 123456
+  redis:
+    host: localhost
+    port: 6379
+    password: 123456
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: admin
+    password: 123456
+
+    #deprecated,use 'publisher-confirm-type'
+#    publisher-comfirms: true
+    publisher-confirm-type: correlated
+    publisher-returns: true
+    listener:
+      simple:
+        acknowledge-mode: manual
+  sleuth:
+    sampler:
+      probability: 1.0
+  zipkin:
+    enabled: true
+    base-url: http://localhost:9411/
+    sender:
+      type: web
+  gson:
+    date-format: yyyy-MM-dd hh:mm:ss
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+    fetch-registry: true
+    registry-fetch-interval-seconds: 8
+  instance:
+    prefer-ip-address: true
+
+sp-product-service:
+  url: http://sp-product-service/productService
