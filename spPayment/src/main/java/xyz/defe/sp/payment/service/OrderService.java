@@ -7,10 +7,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import xyz.defe.sp.common.ExceptionUtil;
-import xyz.defe.sp.common.RestUtil;
 import xyz.defe.sp.common.entity.spOrder.SpOrder;
+import xyz.defe.sp.common.exception.ExceptionUtil;
 import xyz.defe.sp.common.pojo.ResponseData;
+import xyz.defe.sp.common.rest.RestUtil;
 
 @Service
 public class OrderService {
@@ -27,7 +27,7 @@ public class OrderService {
      * @param id
      * @return
      */
-    public SpOrder getToPayOrder(String id) throws Exception {
+    public SpOrder getToPayOrder(String id) {
         int index = 0;
         int paymentState = 1;
         int[] millsArr = new int[]{1000, 3000, 5000, 7000, 9000};
@@ -42,7 +42,12 @@ public class OrderService {
                 return order;
             }
             log.info("getting the order...");
-            Thread.sleep(millsArr[index]);
+            try {
+                Thread.sleep(millsArr[index]);
+            } catch (InterruptedException e) {
+                log.warn(e.getMessage());
+                e.printStackTrace();
+            }
             order = getOrder(id);
             index++;
         }

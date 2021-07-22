@@ -1,4 +1,4 @@
-package xyz.defe.sp.common;
+package xyz.defe.sp.common.response;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

@@ -11,7 +11,7 @@ public class OrderServiceTest {
     private ProductService productService;
 
     @Test
-    public void returnProducts() throws Exception {
+    public void returnProducts() {
         productService.processExpiredOrders();
     }
 

@@ -6,5 +6,5 @@ import xyz.defe.sp.common.entity.spPayment.Wallet;
 public interface PaymentService {
     Wallet createUserWallet(Wallet wallet);
 
-    PaymentLog pay(String orderId) throws Exception;
+    PaymentLog pay(String orderId);
 }

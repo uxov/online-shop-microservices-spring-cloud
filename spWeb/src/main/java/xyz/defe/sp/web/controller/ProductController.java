@@ -5,17 +5,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import xyz.defe.sp.common.pojo.PageQuery;
-import xyz.defe.sp.common.pojo.ResponseData;
+import xyz.defe.sp.common.response.ResponseDataResult;
 import xyz.defe.sp.web.service.ProductService;
 
 @RestController
+@ResponseDataResult
 @RequestMapping("/product")
-public class ProductController extends BaseController {
+public class ProductController {
     @Autowired
     private ProductService productService;
 
     @GetMapping("list")
-    public ResponseData getProducts(PageQuery pageQuery){
-        return response(() -> productService.getProducts(pageQuery));
+    public Object getProducts(PageQuery pageQuery){
+        return productService.getProducts(pageQuery);
     }
 }

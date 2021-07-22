@@ -10,17 +10,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import xyz.defe.sp.common.Cache;
 import xyz.defe.sp.common.Const;
-import xyz.defe.sp.common.ExceptionUtil;
-import xyz.defe.sp.common.WarnException;
 import xyz.defe.sp.common.entity.spOrder.SpOrder;
 import xyz.defe.sp.common.entity.spProduct.Product;
+import xyz.defe.sp.common.exception.ExceptionUtil;
 import xyz.defe.sp.common.pojo.Cart;
 import xyz.defe.sp.common.pojo.OrderMsg;
 import xyz.defe.sp.common.pojo.PageQuery;
 import xyz.defe.sp.order.dao.OrderDao;
 
 import javax.transaction.Transactional;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -46,7 +48,7 @@ public class OrderServiceImpl implements OrderService {
         return token;
     }
 
-    void checkCart(Cart cart) throws WarnException {
+    void checkCart(Cart cart) {
         if (Strings.isNullOrEmpty(cart.getUid())) {
             ExceptionUtil.warn("uid is empty");
         }
@@ -73,7 +75,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public SpOrder newOrder(Cart cart) throws Exception {
+    public SpOrder newOrder(Cart cart) {
         checkCart(cart);
         Set<String> productIdSet = cart.getCounterMap().keySet();
         List<Product> products = productService.getProducts(productIdSet);
@@ -93,7 +95,7 @@ public class OrderServiceImpl implements OrderService {
         //save message to local table
         localMessageService.saveOrderMessage(message, 1);
         log.info("save OrderMsg,id={}", message.getId());
-
+        
         //send message
         mqMessageService.sendOrderMsg(message, 1);
 
@@ -142,7 +144,7 @@ public class OrderServiceImpl implements OrderService {
      * @param id
      * @return
      */
-    public SpOrder getPaidOrder(String id) throws InterruptedException {
+    public SpOrder getPaidOrder(String id) {
         int index = 0;
         int paymentState = 2;
         int[] millsArr = new int[]{1000, 3000, 5000, 7000, 9000};
@@ -154,7 +156,12 @@ public class OrderServiceImpl implements OrderService {
                 return order;
             }
             log.info("getting the paid order...");
-            Thread.sleep(millsArr[index]);
+            try {
+                Thread.sleep(millsArr[index]);
+            } catch (InterruptedException e) {
+                log.warn(e.getMessage());
+                e.printStackTrace();
+            }
             order = orderDao.findByIdAndPaymentState(id, paymentState);
             index++;
         }

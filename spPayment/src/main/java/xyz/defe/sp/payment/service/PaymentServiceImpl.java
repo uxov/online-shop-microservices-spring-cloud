@@ -8,12 +8,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import xyz.defe.sp.common.Const;
-import xyz.defe.sp.common.ExceptionUtil;
-import xyz.defe.sp.common.WarnException;
 import xyz.defe.sp.common.entity.spOrder.SpOrder;
 import xyz.defe.sp.common.entity.spPayment.PaymentLog;
 import xyz.defe.sp.common.entity.spPayment.Wallet;
 import xyz.defe.sp.common.entity.spProduct.Product;
+import xyz.defe.sp.common.exception.ExceptionUtil;
+import xyz.defe.sp.common.exception.WarnException;
 import xyz.defe.sp.common.pojo.Cart;
 import xyz.defe.sp.common.pojo.OrderMsg;
 import xyz.defe.sp.payment.dao.PaymentLogDao;
@@ -44,15 +44,16 @@ public class PaymentServiceImpl implements PaymentService {
         return walletDao.saveAndFlush(wallet);
     }
 
-    private void checkOrder(String orderId) throws Exception {
-        if (Strings.isNullOrEmpty(orderId)) {ExceptionUtil.warn("orderId is empty");}
+    private void checkOrder(String orderId) {
+        if (Strings.isNullOrEmpty(orderId)) {
+            ExceptionUtil.warn("orderId is empty");}
         PaymentLog record = paymentLogDao.findByOrderId(orderId);
         if (record != null) {ExceptionUtil.warn("the order is paid,id="+ orderId);}
     }
 
     @Override
-    @Transactional(rollbackOn = Exception.class)
-    public PaymentLog pay(String orderId) throws Exception {
+    @Transactional
+    public PaymentLog pay(String orderId) {
         checkOrder(orderId);
         SpOrder order = orderService.getToPayOrder(orderId);
         if (order == null) {ExceptionUtil.warn("the order is not able to pay,id=" + orderId);}

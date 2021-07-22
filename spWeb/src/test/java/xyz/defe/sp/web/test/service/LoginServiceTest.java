@@ -13,7 +13,7 @@ public class LoginServiceTest {
     private LoginService loginService;
 
     @Test
-    void login() throws Exception {
+    void login() {
         Account account = loginService.login("mike", "123");
         Assertions.assertEquals("Mike", account.getName());
     }

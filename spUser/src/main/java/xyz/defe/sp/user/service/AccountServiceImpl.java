@@ -3,9 +3,8 @@ package xyz.defe.sp.user.service;
 import com.google.common.base.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import xyz.defe.sp.common.ExceptionUtil;
-import xyz.defe.sp.common.WarnException;
 import xyz.defe.sp.common.entity.spUser.Account;
+import xyz.defe.sp.common.exception.ExceptionUtil;
 import xyz.defe.sp.user.dao.AccountDao;
 
 import java.util.List;
@@ -21,7 +20,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Account verify(String uname, String pwd) throws WarnException {
+    public Account verify(String uname, String pwd) {
         if (Strings.isNullOrEmpty(uname) || Strings.isNullOrEmpty(pwd)) {
             ExceptionUtil.warn("uname or pwd is empty");
         }

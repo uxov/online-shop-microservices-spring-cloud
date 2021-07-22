@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import xyz.defe.sp.common.RestUtil;
 import xyz.defe.sp.common.entity.spProduct.Product;
 import xyz.defe.sp.common.pojo.ResponseData;
+import xyz.defe.sp.common.rest.RestUtil;
 import xyz.defe.sp.test.BaseTest;
 
 import java.util.List;

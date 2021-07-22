@@ -1,36 +1,35 @@
 package xyz.defe.sp.web.service;
 
 import com.google.common.base.Strings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.client.RestTemplate;
+import xyz.defe.sp.common.exception.WarnException;
 import xyz.defe.sp.common.pojo.ResponseData;
 
 public class BaseService {
     @Autowired
     public RestTemplate rest;
-    public final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Value("${gateway.url}")
     public String baseURL;
 
-    public ResponseData request(ThrowingRunnable func) throws Exception {
-        ResponseData responseData = null;
-        try {
-            responseData = func.run();
-        } catch (Throwable throwable) {
-            throw new Exception(throwable.getMessage());
-        }
-        if (responseData.getStatus() != 200 && !Strings.isNullOrEmpty(responseData.getError())) {
-            throw new Exception(responseData.getError());
+    public ResponseData request(Runnable func) {
+        ResponseData responseData = func.run();
+        if (responseData.getStatus() != HttpStatus.OK.value()) {
+            if (!Strings.isNullOrEmpty(responseData.getError())) {
+                throw new RuntimeException(responseData.getError());
+            }
+            if (!Strings.isNullOrEmpty(responseData.getMessage())) {
+                throw new WarnException(responseData.getMessage());
+            }
         }
         return responseData;
     }
 
     @FunctionalInterface
-    public interface ThrowingRunnable {
-        ResponseData run() throws Throwable;
+    public interface Runnable {
+        ResponseData run();
     }
 }

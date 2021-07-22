@@ -1,4 +1,4 @@
-package xyz.defe.sp.test.services.config;
+package xyz.defe.sp.test.config;
 
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.context.annotation.Bean;

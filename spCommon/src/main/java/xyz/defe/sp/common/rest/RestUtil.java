@@ -1,4 +1,4 @@
-package xyz.defe.sp.common;
+package xyz.defe.sp.common.rest;
 
 import org.springframework.web.client.RestTemplate;
 

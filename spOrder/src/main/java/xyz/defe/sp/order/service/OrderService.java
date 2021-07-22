@@ -1,17 +1,15 @@
 package xyz.defe.sp.order.service;
 
-import xyz.defe.sp.common.WarnException;
 import xyz.defe.sp.common.entity.spOrder.SpOrder;
 import xyz.defe.sp.common.pojo.Cart;
 import xyz.defe.sp.common.pojo.PageQuery;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 public interface OrderService {
     String getOrderToken();
 
-    SpOrder newOrder(Cart cart) throws Exception;
+    SpOrder newOrder(Cart cart);
 
     SpOrder getOrder(String id);
 
@@ -33,7 +31,7 @@ public interface OrderService {
      */
     void setOrderPaymentState(String id, int state);
 
-    SpOrder getPaidOrder(String id) throws WarnException, InterruptedException, ExecutionException;
+    SpOrder getPaidOrder(String id);
 
     void saveAll(Iterable<SpOrder> entities);
 }

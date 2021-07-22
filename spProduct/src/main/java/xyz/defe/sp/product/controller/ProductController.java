@@ -2,45 +2,42 @@ package xyz.defe.sp.product.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import xyz.defe.sp.common.ResponseWrap;
 import xyz.defe.sp.common.entity.spProduct.Product;
 import xyz.defe.sp.common.pojo.PageQuery;
 import xyz.defe.sp.common.pojo.ResponseData;
+import xyz.defe.sp.common.response.ResponseDataResult;
 import xyz.defe.sp.product.service.ProductService;
 
 import java.util.List;
 import java.util.Map;
 
 @RestController
+@ResponseDataResult
 public class ProductController {
-    @Autowired
-    private ResponseWrap response;
     @Autowired
     private ProductService productService;
 
     @PostMapping("")
-    public ResponseData addProducts(@RequestBody List<Product> products) {
-        return response.wrap(() -> {
-            productService.addProducts(products);
-            ResponseData responseData = new ResponseData();
-            responseData.setMessage("added products successful");
-            return responseData;
-        });
+    public Object addProducts(@RequestBody List<Product> products) {
+        productService.addProducts(products);
+        ResponseData responseData = new ResponseData();
+        responseData.setMessage("added products successful");
+        return responseData;
     }
 
     @GetMapping("products")
-    public ResponseData getProducts(PageQuery pageQuery) {
-        return response.wrap(() -> productService.getProducts(pageQuery));
+    public Object getProducts(PageQuery pageQuery) {
+        return productService.getProducts(pageQuery);
     }
 
     @GetMapping("product/{id}")
-    public ResponseData getById(@PathVariable String id) {
-        return response.wrap(() -> productService.getById(id));
+    public Object getById(@PathVariable String id) {
+        return productService.getById(id);
     }
 
     @GetMapping("products/{ids}")
-    public ResponseData getByIds(@PathVariable String ids) {
-        return response.wrap(() -> productService.getByIds(ids));
+    public Object getByIds(@PathVariable String ids) {
+        return productService.getByIds(ids);
     }
 
     /**
@@ -48,8 +45,8 @@ public class ProductController {
      * @return {data : {productId : quantity}}
      */
     @GetMapping("quantity/{ids}")
-    public ResponseData getQuantity(@PathVariable String ids) {
-        return response.wrap(() -> productService.getQuantity(ids));
+    public Object getQuantity(@PathVariable String ids) {
+        return productService.getQuantity(ids);
     }
 
     /**
@@ -58,7 +55,7 @@ public class ProductController {
      * @return {data: Set<String>}  restore successful order's id
      */
     @PostMapping("quantity/restore")
-    public ResponseData restoreProductQuantity(@RequestBody Map<String, Map<String, Integer>> restoreMap) {
-        return response.wrap(() -> productService.restoreProductQuantity(restoreMap));
+    public Object restoreProductQuantity(@RequestBody Map<String, Map<String, Integer>> restoreMap) {
+        return productService.restoreProductQuantity(restoreMap);
     }
 }

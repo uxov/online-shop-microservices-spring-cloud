@@ -10,11 +10,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import xyz.defe.sp.common.Const;
-import xyz.defe.sp.common.WarnException;
 import xyz.defe.sp.common.entity.spProduct.Product;
+import xyz.defe.sp.common.exception.WarnException;
 import xyz.defe.sp.common.pojo.PageQuery;
-import xyz.defe.sp.product.dao.ProductDao;
 import xyz.defe.sp.product.dao.DeductQuantityLogDao;
+import xyz.defe.sp.product.dao.ProductDao;
 import xyz.defe.sp.product.entity.DeductQuantityLog;
 
 import javax.transaction.Transactional;
@@ -70,7 +70,7 @@ public class ProductServiceImpl implements ProductService {
         return result;
     }
 
-    private void checkBeforeDeductQuantity(String orderId, Map<String, Integer> counterMap) throws WarnException {
+    private void checkBeforeDeductQuantity(String orderId, Map<String, Integer> counterMap) {
         if (counterMap == null || counterMap.isEmpty()) {
             throw new WarnException("counterMap is empty");
         }
@@ -82,7 +82,7 @@ public class ProductServiceImpl implements ProductService {
     //another way: load quantities to cache,split product's quantity and use segment locks
     @Override
     @Transactional
-    public int deductQuantity(String orderId, Map<String, Integer> counterMap) throws Exception {
+    public int deductQuantity(String orderId, Map<String, Integer> counterMap) {
         checkBeforeDeductQuantity(orderId, counterMap);
         DeductQuantityLog log = deductQuantityLogDao.findByOrderId(orderId);
         if (log != null) {
@@ -130,7 +130,7 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     @Transactional
-    public int checkAndDeduct(String orderId, Map<String, Integer> counterMap) throws Exception {
+    public int checkAndDeduct(String orderId, Map<String, Integer> counterMap) {
         return deductQuantity(orderId, counterMap);
     }
 
