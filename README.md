@@ -1,4 +1,4 @@
-# Microservices Example - Online Shop - Base On Spring Cloud
+# Online Shop - Microservices Example - Build Microservices Using Spring Boot And Spring Cloud
 
 
 - Eureka
