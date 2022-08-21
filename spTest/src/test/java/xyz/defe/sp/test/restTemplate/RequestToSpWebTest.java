@@ -13,6 +13,7 @@ import xyz.defe.sp.common.entity.spProduct.Product;
 import xyz.defe.sp.common.pojo.Cart;
 import xyz.defe.sp.common.pojo.ResponseData;
 import xyz.defe.sp.common.rest.RestUtil;
+import xyz.defe.sp.test.config.TokenConfig;
 
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +27,8 @@ public class RequestToSpWebTest extends BaseTest {
 
     @Test
     public void request() {
+        TokenConfig.token = "";
+
         //a. get products
         ResponseData responseData = request(() -> {
             return RestUtil.INSTANCE.set(rest)
@@ -49,10 +52,11 @@ public class RequestToSpWebTest extends BaseTest {
         String token = (String) map.get("token");
         Assertions.assertTrue(!Strings.isNullOrEmpty(uid));
         Assertions.assertTrue(!Strings.isNullOrEmpty(token));
+        TokenConfig.token = token;
 
         //c. add products to cart and submit the order
         responseData = request(() -> {
-            return RestUtil.INSTANCE.set(rest).get(baseURL + "order/orderToken?token={token}", token);
+            return RestUtil.INSTANCE.set(rest).get(baseURL + "order/orderToken");
         });
         String orderToken = (String) responseData.getData();
         Assertions.assertTrue(!Strings.isNullOrEmpty(orderToken));
@@ -63,8 +67,8 @@ public class RequestToSpWebTest extends BaseTest {
         cart.getCounterMap().put(products.get(1).getId(), 2);
         responseData  = request(() -> {
             return RestUtil.INSTANCE.set(rest)
-                    .post(baseURL + "order/?token={token}", cart,
-                            new ParameterizedTypeReference<ResponseData<SpOrder>>() {}, token);
+                    .post(baseURL + "order", cart,
+                            new ParameterizedTypeReference<ResponseData<SpOrder>>() {});
         });
         SpOrder order = (SpOrder) responseData.getData();
         Assertions.assertNotNull(order);
@@ -74,9 +78,8 @@ public class RequestToSpWebTest extends BaseTest {
         //d. pay the order
         responseData = request(() -> {
             return RestUtil.INSTANCE.set(rest)
-                    .post(baseURL + "payment/pay?token={token}&orderId={orderId}",
-                            new ParameterizedTypeReference<ResponseData<PaymentLog>>() {},
-                            token, orderId);
+                    .post(baseURL + "payment/pay?orderId={orderId}",
+                            new ParameterizedTypeReference<ResponseData<PaymentLog>>() {}, orderId);
         });
         PaymentLog record = (PaymentLog) responseData.getData();
         Assertions.assertNotNull(record);
@@ -85,8 +88,8 @@ public class RequestToSpWebTest extends BaseTest {
         //e. get the paid order
         responseData = request(() -> {
             return RestUtil.INSTANCE.set(rest)
-                    .get(baseURL + "order/paid/{id}?token={token}",
-                            new ParameterizedTypeReference<ResponseData<SpOrder>>() {}, orderId, token);
+                    .get(baseURL + "order/paid/{id}",
+                            new ParameterizedTypeReference<ResponseData<SpOrder>>() {}, orderId);
         });
         order = (SpOrder) responseData.getData();
         Assertions.assertEquals(2, order.getPaymentState());

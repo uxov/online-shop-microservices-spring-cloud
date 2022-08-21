@@ -46,4 +46,4 @@ eureka:
     prefer-ip-address: true
 
 sp-order-service:
-  url: http://sp-order-service/orderService
+  url: SP-ORDER-SERVICE/orderService/

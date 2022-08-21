@@ -1,7 +1,7 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '2.4.0'
-	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+	id 'org.springframework.boot' version '2.7.3'
+	id 'io.spring.dependency-management' version '1.0.13.RELEASE'
 }
 
 group = 'xyz.defe.sp'
@@ -13,19 +13,18 @@ repositories {
 }
 
 ext {
-	set('springCloudVersion', "2020.0.0")
+	set('springCloudVersion', "2021.0.3")
 }
 
 dependencies {
 	implementation fileTree(include: ["spCommon-0.0.1-SNAPSHOT.jar"], dir: "../spCommon/build/libs")
 
-	implementation 'com.google.guava:guava:19.0'
+	implementation 'com.google.guava:guava:31.1-jre'
 	implementation 'com.google.code.gson:gson:+'
-	implementation 'redis.clients:jedis:3.5.1'
-	implementation 'org.springframework.data:spring-data-redis:2.4.3'
+	implementation 'redis.clients:jedis:3.9.0'
+	implementation 'org.springframework.data:spring-data-redis:2.7.2'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
-	implementation 'org.springframework.cloud:spring-cloud-sleuth-zipkin'
+	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
@@ -42,4 +41,4 @@ test {
 	useJUnitPlatform()
 }
 
-test.enabled = false
+//test.enabled = false

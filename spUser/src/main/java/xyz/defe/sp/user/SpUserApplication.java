@@ -18,8 +18,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 				@ComponentScan.Filter(type = FilterType.ASPECTJ, pattern = "xyz.defe.sp.common.service.*")
 		}
 )
-public class
-SpUserApplication {
+public class SpUserApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SpUserApplication.class, args);

@@ -2,6 +2,7 @@ package xyz.defe.sp.order.service;
 
 import xyz.defe.sp.common.entity.spOrder.SpOrder;
 import xyz.defe.sp.common.pojo.Cart;
+import xyz.defe.sp.common.pojo.OrderMsg;
 import xyz.defe.sp.common.pojo.PageQuery;
 
 import java.util.List;
@@ -34,4 +35,8 @@ public interface OrderService {
     SpOrder getPaidOrder(String id);
 
     void saveAll(Iterable<SpOrder> entities);
+
+    public void processExpiredOrders();
+
+    public void sendOrderMsg(OrderMsg msg, int retry);
 }

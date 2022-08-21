@@ -1,4 +1,4 @@
-package xyz.defe.sp.test.services.spUser;
+package xyz.defe.sp.test.restTemplate.services.spUser;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;

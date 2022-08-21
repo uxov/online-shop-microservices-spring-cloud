@@ -1,4 +1,4 @@
-package xyz.defe.sp.test.services.spPayment;
+package xyz.defe.sp.test.restTemplate.services.spPayment;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -7,8 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import xyz.defe.sp.common.entity.spOrder.SpOrder;
 import xyz.defe.sp.common.entity.spPayment.PaymentLog;
 import xyz.defe.sp.common.entity.spUser.Account;
-import xyz.defe.sp.test.services.spOrder.OrderRequest;
-import xyz.defe.sp.test.services.spUser.SpUserRequest;
+import xyz.defe.sp.test.restTemplate.services.spOrder.OrderRequest;
+import xyz.defe.sp.test.restTemplate.services.spUser.SpUserRequest;
 
 import java.util.List;
 

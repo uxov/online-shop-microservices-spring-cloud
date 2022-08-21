@@ -3,6 +3,7 @@
 
 - Eureka
 - Spring Cloud Gateway
+- Spring Cloud OpenFeign
 - Spring Cloud Circuit Breaker - Resilience4J
 - Spring Cloud Sleuth + Zipkin  
 - Redis
@@ -18,7 +19,7 @@
 
 ## Run And Test  
 ### Requirements
-- Java version >= 8
+- JDK 18
 - Gradle
 - Database
 - RabbitMQ
@@ -49,7 +50,11 @@ gradle build
 4. Start web App: `spWeb`
 
 5. Add test data by execute
-`addData()` in `spTest/src/test/java/xyz/defe/sp/test/services/AddTestData.java`
+`addData()` in `spTest/src/test/java/xyz/defe/sp/test/AddTestData.java`
+
+### Web UI
+Eureka > http://localhost:8761  
+Zipkin > http://192.168.1.107:9411
 
 ### Test
 See test codes in `spTest/src/test/java/xyz/defe/sp/test/*`

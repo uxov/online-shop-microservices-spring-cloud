@@ -1,4 +1,4 @@
-package xyz.defe.sp.test.services.spPayment;
+package xyz.defe.sp.test.restTemplate.services.spPayment;
 
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;

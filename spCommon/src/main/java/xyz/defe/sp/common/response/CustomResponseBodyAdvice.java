@@ -32,7 +32,7 @@ public class CustomResponseBodyAdvice implements ResponseBodyAdvice<Object> {
             ResponseData responseData = new ResponseData();
             responseData.setData(body);
             responseData.setStatus(HttpStatus.OK.value());
-            if (body instanceof String) {return gson.toJson(responseData);}
+//            if (body instanceof String) {return gson.toJson(responseData);}
             return responseData;
         }
     }

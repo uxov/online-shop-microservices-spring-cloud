@@ -41,7 +41,8 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
     private Mono<ServerResponse> renderErrorResponse(ServerRequest request) {
         Map<String, Object> errorPropertiesMap = getErrorAttributes(request, ErrorAttributeOptions.defaults());
         log.error("request failed: {} - {}", errorPropertiesMap.get("path"), errorPropertiesMap.get("error"));
-
+        Throwable t = getError(request);
+        t.printStackTrace();
         return ServerResponse.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(errorPropertiesMap));
     }

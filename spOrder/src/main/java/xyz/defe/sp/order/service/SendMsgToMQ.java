@@ -18,8 +18,6 @@ public class SendMsgToMQ {
     @Autowired
     private LocalMessageService localMessageService;
     @Autowired
-    private MqMessageService mqMessageService;
-    @Autowired
     private AsyncRabbitTemplate asyncRabbitTemplate;
     @Autowired
     private OrderService orderService;
@@ -32,7 +30,7 @@ public class SendMsgToMQ {
             try {
                 msgJson = m.getMsgJson();
                 OrderMsg msg = gson.fromJson(msgJson, OrderMsg.class);
-                mqMessageService.sendOrderMsg(msg, 0);
+                orderService.sendOrderMsg(msg, 0);
             } catch (Exception e) {
                 localMessageService.setRetry(m.getId(), 0);
                 log.error("send message failed,OrderMsg id={}", m.getId());

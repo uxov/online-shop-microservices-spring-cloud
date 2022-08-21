@@ -53,4 +53,4 @@ eureka:
     prefer-ip-address: true
 
 sp-product-service:
-  url: http://sp-product-service/productService
+  url: SP-PRODUCT-SERVICE/productService/

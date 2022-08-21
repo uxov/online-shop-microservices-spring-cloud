@@ -18,7 +18,7 @@ public class OrderController {
         return orderService.getOrderToken();
     }
 
-    @PostMapping("/")
+    @PostMapping
     public Object newOrder(@RequestBody Cart cart) {
         return orderService.newOrder(cart);
     }

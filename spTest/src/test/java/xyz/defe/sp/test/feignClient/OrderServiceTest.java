@@ -1,6 +1,6 @@
-package xyz.defe.sp.test.services.spOrder;
+package xyz.defe.sp.test.feignClient;
 
-import org.assertj.core.util.Strings;
+import com.google.common.base.Strings;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,36 +9,34 @@ import xyz.defe.sp.common.entity.spOrder.SpOrder;
 import xyz.defe.sp.common.entity.spProduct.Product;
 import xyz.defe.sp.common.entity.spUser.Account;
 import xyz.defe.sp.common.pojo.Cart;
-import xyz.defe.sp.test.services.spProduct.ProductRequest;
-import xyz.defe.sp.test.services.spUser.SpUserRequest;
 
 import java.util.List;
 
 @SpringBootTest
-public class OrderTest {
+public class OrderServiceTest {
     @Autowired
-    private SpUserRequest spUserRequest;
+    private UserService userService;
     @Autowired
-    private ProductRequest productRequest;
+    private OrderService orderService;
     @Autowired
-    private OrderRequest orderRequest;
+    private ProductService productService;
 
     @Test
     void getOrderToken() {
-        String orderToken = orderRequest.getOrderToken();
+        String orderToken = orderService.getOrderToken().getData();
         Assertions.assertTrue(!Strings.isNullOrEmpty(orderToken));
         System.out.println("orderToken="+orderToken);
     }
 
     @Test
     void submitOrder() {
-        Account account = spUserRequest.verify("mike", "123");
+        Account account = userService.verify("mike", "123").getData();
         Assertions.assertNotNull(account);
 
-        String orderToken = orderRequest.getOrderToken();
-        Assertions.assertTrue(!Strings.isNullOrEmpty(orderToken));
+        String orderToken = orderService.getOrderToken().getData();
+        Assertions.assertTrue(!org.assertj.core.util.Strings.isNullOrEmpty(orderToken));
 
-        List<Product> products = productRequest.getProducts();
+        List<Product> products = productService.getProducts(1, 10).getData();
         Assertions.assertNotNull(products);
         Assertions.assertTrue(!products.isEmpty());
 
@@ -47,9 +45,8 @@ public class OrderTest {
         cart.setOrderToken(orderToken);
         cart.getCounterMap().put(products.get(0).getId(), 1);
         cart.getCounterMap().put(products.get(1).getId(), 2);
-        SpOrder order = orderRequest.submitOrder(cart);
+        SpOrder order = orderService.newOrder(cart).getData();
         Assertions.assertNotNull(order);
         Assertions.assertNotNull(order.getId());
     }
-
 }

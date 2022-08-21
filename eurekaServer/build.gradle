@@ -1,7 +1,7 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '2.4.0'
-	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+	id 'org.springframework.boot' version '2.7.3'
+	id 'io.spring.dependency-management' version '1.0.13.RELEASE'
 }
 
 group = 'xyz.defe.sp'
@@ -9,11 +9,10 @@ version = '0.0.1-SNAPSHOT'
 
 repositories {
 	mavenCentral()
-	maven { url 'https://repo.spring.io/milestone' }
 }
 
 ext {
-	set('springCloudVersion', "2020.0.0")
+	set('springCloudVersion', "2021.0.3")
 }
 
 dependencies {

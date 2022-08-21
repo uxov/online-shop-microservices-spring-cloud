@@ -1,4 +1,4 @@
-package xyz.defe.sp.test.services;
+package xyz.defe.sp.test;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -8,9 +8,9 @@ import xyz.defe.sp.common.entity.spPayment.Wallet;
 import xyz.defe.sp.common.entity.spProduct.Product;
 import xyz.defe.sp.common.entity.spUser.Account;
 import xyz.defe.sp.common.pojo.ResponseData;
-import xyz.defe.sp.test.services.spPayment.PaymentRequest;
-import xyz.defe.sp.test.services.spProduct.ProductRequest;
-import xyz.defe.sp.test.services.spUser.SpUserRequest;
+import xyz.defe.sp.test.restTemplate.services.spUser.SpUserRequest;
+import xyz.defe.sp.test.restTemplate.services.spPayment.PaymentRequest;
+import xyz.defe.sp.test.restTemplate.services.spProduct.ProductRequest;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

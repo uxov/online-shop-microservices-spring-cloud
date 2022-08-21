@@ -1,53 +1,30 @@
 package xyz.defe.sp.web.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import xyz.defe.sp.common.entity.spOrder.SpOrder;
 import xyz.defe.sp.common.pojo.Cart;
-import xyz.defe.sp.common.pojo.ResponseData;
-import xyz.defe.sp.common.rest.RestUtil;
+import xyz.defe.sp.web.api.OrderFeignClient;
 
 @Service
-public class OrderService extends BaseService {
+public class OrderService {
     @Autowired
-    private ProductService productService;
-    @Autowired
-    private OrderService orderService;
+    private OrderFeignClient orderFeignClient;
 
     public String getOrderToken() {
-        ResponseData<String> responseData = request(() -> {
-            return RestUtil.INSTANCE.set(rest)
-                    .get(baseURL + "orderService/order/token");
-        });
-        return responseData.getData();
+        return orderFeignClient.getOrderToken().getData();
     }
 
     public SpOrder newOrder(Cart cart) {
-        ResponseData<SpOrder> responseData  = request(() -> {
-            return RestUtil.INSTANCE.set(rest)
-                    .post(baseURL + "orderService/order", cart,
-                            new ParameterizedTypeReference<ResponseData<SpOrder>>() {});
-        });
-        return responseData.getData();
+        return orderFeignClient.newOrder(cart).getData();
     }
 
     public SpOrder getOrder(String orderId) {
-        ResponseData<SpOrder> responseData = request(() -> {
-            return RestUtil.INSTANCE.set(rest)
-                    .get(baseURL + "orderService/order/{id}",
-                            new ParameterizedTypeReference<ResponseData<SpOrder>>() {}, orderId);
-        });
-        return responseData.getData();
+        return orderFeignClient.getOrder(orderId).getData();
     }
 
     public SpOrder getPaidOrder(String orderId) {
-        ResponseData<SpOrder> responseData = request(() -> {
-            return RestUtil.INSTANCE.set(rest)
-                    .get(baseURL + "orderService/order/paid/{id}",
-                            new ParameterizedTypeReference<ResponseData<SpOrder>>() {}, orderId);
-        });
-        return responseData.getData();
+        return orderFeignClient.getPaidOrder(orderId).getData();
     }
 
 }

@@ -1,19 +1,16 @@
 package xyz.defe.sp.web.service;
 
-import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import xyz.defe.sp.common.entity.spUser.Account;
-import xyz.defe.sp.common.pojo.ResponseData;
-import xyz.defe.sp.common.rest.RestUtil;
+import xyz.defe.sp.web.api.UserServiceFeignClient;
 
 @Service
-public class LoginService extends BaseService {
+public class LoginService {
+    @Autowired
+    private UserServiceFeignClient userServiceFeignClient;
+
     public Account login(String uname, String pwd) {
-        ResponseData<Account> responseData = request(() -> {
-            return RestUtil.INSTANCE.set(rest)
-                    .post(baseURL + "userService/verify?uname={uname}&pwd={pwd}",
-                            new ParameterizedTypeReference<ResponseData<Account>>() {}, uname, pwd);
-        });
-        return responseData.getData();
+        return userServiceFeignClient.verify(uname, pwd).getData();
     }
 }

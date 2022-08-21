@@ -1,4 +1,4 @@
-package xyz.defe.sp.test.services.spProduct;
+package xyz.defe.sp.test.restTemplate.services.spProduct;
 
 import org.assertj.core.util.Strings;
 import org.junit.jupiter.api.Assertions;
@@ -21,4 +21,5 @@ public class ProductTest {
         Assertions.assertEquals(3, list.size());
         Assertions.assertTrue(!Strings.isNullOrEmpty(list.get(0).getName()));
     }
+
 }

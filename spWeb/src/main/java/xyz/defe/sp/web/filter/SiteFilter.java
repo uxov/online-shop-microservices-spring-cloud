@@ -3,6 +3,7 @@ package xyz.defe.sp.web.filter;
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import xyz.defe.sp.common.Cache;
 import xyz.defe.sp.common.pojo.ResponseData;
 import xyz.defe.sp.web.Constant;
@@ -32,7 +33,7 @@ public class SiteFilter implements Filter {
         response.setCharacterEncoding("UTF-8");
         ResponseData responseData = new ResponseData();
         responseData.setStatus(500);
-        String token = request.getParameter( "token");
+        String token = request.getHeader(HttpHeaders.AUTHORIZATION);
         String path = request.getRequestURI().substring(request.getContextPath().length()).replaceAll("[/]+$", "");
         if (!path.equals("/login") && !path.equals("/product/list")) {
             if (Strings.isNullOrEmpty(token)) {

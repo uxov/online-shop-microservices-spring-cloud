@@ -1,13 +1,16 @@
 package xyz.defe.sp.order.service;
 
 import com.google.common.base.Strings;
+import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.AsyncRabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.concurrent.ListenableFutureCallback;
 import xyz.defe.sp.common.Cache;
 import xyz.defe.sp.common.Const;
 import xyz.defe.sp.common.entity.spOrder.SpOrder;
@@ -19,10 +22,7 @@ import xyz.defe.sp.common.pojo.PageQuery;
 import xyz.defe.sp.order.dao.OrderDao;
 
 import javax.transaction.Transactional;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -36,9 +36,9 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private ProductService productService;
     @Autowired
-    private LocalMessageService localMessageService;
+    private AsyncRabbitTemplate asyncRabbitTemplate;
     @Autowired
-    private MqMessageService mqMessageService;
+    private LocalMessageService localMessageService;
     @Autowired
     public RedissonClient redisson;
     private final Logger log = LoggerFactory.getLogger(this.getClass());
@@ -97,7 +97,7 @@ public class OrderServiceImpl implements OrderService {
         log.info("save OrderMsg,id={}", message.getId());
         
         //send message
-        mqMessageService.sendOrderMsg(message, 1);
+        sendOrderMsg(message, 1);
 
         return order;
     }
@@ -172,4 +172,58 @@ public class OrderServiceImpl implements OrderService {
     public void saveAll(Iterable<SpOrder> entities) {
         orderDao.saveAll(entities);
     }
+
+    /**
+     * when unpaid orders are expired(such as expired time=30 minutes)
+     * then request to PRODUCT SERVICE to restore product's quantity
+     * if successful then set orders invalid
+     */
+    public void processExpiredOrders() {
+        Long current = new Date().getTime();
+        Map<String, Map<String, Integer>> restoreMap = new HashMap<>();
+        List<SpOrder> orders = getUnpaidOrders();
+        for (SpOrder order : orders) {
+            if (current - order.getCreatedTime().getTime() > Const.EXPIRED_TIME_ORDER_MILLIS) {
+                Map<String, Integer> counterMap = ((Cart)gson.fromJson(order.getCartJson(),
+                        new TypeToken<Cart>(){}.getType())).getCounterMap();
+                restoreMap.put(order.getId(), counterMap);
+            }
+        }
+        Set<String> successfulOrderIdSet = productService.reStoreQuantity(restoreMap);
+        if (successfulOrderIdSet != null && !successfulOrderIdSet.isEmpty()) {
+            orders.removeIf(order -> !successfulOrderIdSet.contains(order.getId()));
+            orders.forEach(order -> order.setValid(false));
+            saveAll(orders);
+        }
+    }
+
+    //OrderMsg has the same id as LocalMessage
+    public void sendOrderMsg(OrderMsg msg, int retry) {
+        //RabbitMQ RPC - Request/Reply Pattern - send product quantity deduction request to PRODUCT SERVICE
+        asyncRabbitTemplate.convertSendAndReceive(Const.EXCHANGE_ORDER, Const.ROUTING_KEY_DEDUCT_QUANTITY_REQUEST, msg)
+                .addCallback(new ListenableFutureCallback<Object>() {
+                    @Override
+                    public void onSuccess(Object result) {
+                        log.info("got product quantity deduction result from PRODUCT SERVICE,result={},order id={}", result, msg.getOrderId());
+                        int flag = (int) result;
+                        if (flag == 0) {    //if deduct quantity failed then set order invalid
+                            setOrderState(msg.getOrderId(), false);
+                            log.info("deduct quantity failed,set order invalid,order id={}", msg.getOrderId());
+                        } else if (flag == 1) {
+                            //set order paymentState=1(to pay)
+                            setOrderPaymentState(msg.getOrderId(), 1);
+                            log.info("deduct quantity successful,set paymentState=1(to pay),order id={}", msg.getOrderId());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Throwable ex) {
+                        localMessageService.setRetry(msg.getId(), retry);
+                        log.error("send message to MQ failed,OrderMsg id={},{}", msg.getId(), ex.getMessage());
+                        ex.printStackTrace();
+                    }
+                });
+        log.info("send product quantity deduction request to PRODUCT SERVICE");
+    }
+
 }

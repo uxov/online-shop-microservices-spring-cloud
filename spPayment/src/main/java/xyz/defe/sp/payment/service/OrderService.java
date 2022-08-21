@@ -3,21 +3,14 @@ package xyz.defe.sp.payment.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import xyz.defe.sp.common.entity.spOrder.SpOrder;
 import xyz.defe.sp.common.exception.ExceptionUtil;
-import xyz.defe.sp.common.pojo.ResponseData;
-import xyz.defe.sp.common.rest.RestUtil;
 
 @Service
 public class OrderService {
-    @Value("${sp-order-service.url}")
-    public String baseURL;
     @Autowired
-    private RestTemplate rest;
+    private OrderFeignClient orderFeignClient;
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     /**
@@ -56,9 +49,6 @@ public class OrderService {
     }
     
     public SpOrder getOrder(String id) {
-        ResponseData responseData = RestUtil.INSTANCE.set(rest)
-                .get(baseURL + "/order/" + id, new ParameterizedTypeReference<ResponseData<SpOrder>>(){});
-        SpOrder order = (SpOrder) responseData.getData();
-        return order;
+        return orderFeignClient.getOrder(id).getData();
     }
 }
