@@ -54,7 +54,7 @@ gradle build
 
 ### Web UI
 Eureka > http://localhost:8761  
-Zipkin > http://192.168.1.107:9411
+Zipkin > http://localhost:9411
 
 ### Test
 See test codes in `spTest/src/test/java/xyz/defe/sp/test/*`
