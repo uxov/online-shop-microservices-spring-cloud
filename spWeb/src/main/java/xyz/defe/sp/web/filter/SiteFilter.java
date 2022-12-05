@@ -39,11 +39,9 @@ public class SiteFilter implements Filter {
             if (Strings.isNullOrEmpty(token)) {
                 responseData.setError("token is empty!");
                 response.getWriter().write(gson.toJson(responseData));
-                return;
             } else if (null == cache.get(Constant.TOKEN_PREFIX + token)) {
                 responseData.setError("token not valid!");
                 response.getWriter().write(gson.toJson(responseData));
-                return;
             } else {
                 chain.doFilter(req, res);
             }

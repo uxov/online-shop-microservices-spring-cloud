@@ -4,7 +4,7 @@ plugins {
 	id 'io.spring.dependency-management' version '1.0.13.RELEASE'
 }
 
-group = 'xyz.defe.sp'
+group = 'xyz.defe'
 version = '0.0.1-SNAPSHOT'
 
 repositories {
@@ -19,16 +19,15 @@ ext {
 dependencies {
 	implementation fileTree(include: ["spCommon-0.0.1-SNAPSHOT.jar"], dir: "../spCommon/build/libs")
 
-	implementation 'com.google.guava:guava:31.1-jre'
 	implementation 'com.google.code.gson:gson:+'
-	implementation 'redis.clients:jedis:4.3.1'
-	implementation 'org.springframework.data:spring-data-redis:3.0.0'
+
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+	implementation 'org.springframework.cloud:spring-cloud-sleuth-zipkin'
+	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
-	testImplementation('org.springframework.boot:spring-boot-starter-test') {
-		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-	}
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 dependencyManagement {
@@ -37,8 +36,6 @@ dependencyManagement {
 	}
 }
 
-test {
+tasks.named('test') {
 	useJUnitPlatform()
 }
-
-//test.enabled = false

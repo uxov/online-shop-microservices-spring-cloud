@@ -1,4 +1,4 @@
-package xyz.defe.sp.test;
+package xyz.defe.sp.test.restTemplate;
 
 import org.assertj.core.util.Strings;
 import org.junit.jupiter.api.Assertions;
@@ -13,6 +13,7 @@ import xyz.defe.sp.common.entity.spProduct.Product;
 import xyz.defe.sp.common.pojo.Cart;
 import xyz.defe.sp.common.pojo.ResponseData;
 import xyz.defe.sp.common.rest.RestUtil;
+import xyz.defe.sp.test.BaseTest;
 import xyz.defe.sp.test.config.TokenConfig;
 
 import java.util.HashMap;

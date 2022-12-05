@@ -9,6 +9,7 @@ import xyz.defe.sp.common.entity.spProduct.Product;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @SpringBootTest
@@ -30,5 +31,15 @@ public class ProductServiceTest {
 
         List<Product> products = productService.getByIds(ids).getData();
         Assertions.assertEquals(count, products.size());
+    }
+
+    @Test
+    void getQuantity() {
+        List<Product> list = productService.getProducts(1, 10).getData();
+        Set<String> productsIdSet = new HashSet();
+        list.stream().forEach(p -> productsIdSet.add(p.getId()));
+        Map<String, Integer> map =  productService
+                .getQuantity(String.join(",", productsIdSet)).getData();
+        map.entrySet().forEach(e -> System.out.println(e.getKey() + " : " + e.getValue()));
     }
 }

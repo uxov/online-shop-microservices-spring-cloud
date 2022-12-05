@@ -7,4 +7,6 @@ public interface PaymentService {
     Wallet createUserWallet(Wallet wallet);
 
     PaymentLog pay(String orderId);
+
+    Wallet getWallet(String uid);
 }

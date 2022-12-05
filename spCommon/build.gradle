@@ -1,5 +1,6 @@
 plugins {
 	id 'java'
+	id "com.github.johnrengelman.shadow" version "7.1.2"
 }
 
 group = 'xyz.defe.sp'
@@ -11,10 +12,21 @@ repositories {
 }
 
 dependencies {
+	implementation 'com.auth0:java-jwt:4.0.0'
 	implementation 'com.google.code.gson:gson:+'
 	implementation 'javax.servlet:javax.servlet-api:4.0.1'
 	implementation 'org.springframework:spring-webmvc:5.3.22'
 	implementation 'org.springframework.data:spring-data-redis:2.7.2'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.7.2'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.7.3'
 }
 
+shadowJar {
+	dependencies {
+		include(dependency('com.auth0:java-jwt:4.0.0'))
+	}
+	archiveFileName = "${project.name}-${version}.jar"
+}
+
+jar.enabled = false
+
+build.finalizedBy(shadowJar)

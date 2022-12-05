@@ -7,6 +7,7 @@ public class ResponseData<T> implements Serializable {
     private T data;
     private String message = "";
     private String error = "";
+    private String serviceName;
 
     public int getStatus() {
         return status;
@@ -38,5 +39,13 @@ public class ResponseData<T> implements Serializable {
 
     public void setError(String error) {
         this.error = error;
+    }
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
     }
 }

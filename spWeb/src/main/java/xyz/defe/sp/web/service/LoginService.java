@@ -2,15 +2,16 @@ package xyz.defe.sp.web.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import xyz.defe.sp.common.entity.spUser.Account;
-import xyz.defe.sp.web.api.UserServiceFeignClient;
+import xyz.defe.sp.common.entity.spUser.ApiToken;
+import xyz.defe.sp.common.pojo.ResponseData;
+import xyz.defe.sp.web.api.AuthServerFeignClient;
 
 @Service
 public class LoginService {
     @Autowired
-    private UserServiceFeignClient userServiceFeignClient;
+    private AuthServerFeignClient authServerFeignClient;
 
-    public Account login(String uname, String pwd) {
-        return userServiceFeignClient.verify(uname, pwd).getData();
+    public ResponseData<ApiToken> login(String uname, String pwd) {
+        return authServerFeignClient.getToken(uname, pwd);
     }
 }

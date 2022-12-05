@@ -41,6 +41,10 @@ spring:
           uri: lb://sp-payment-service
           predicates:
             - Path=/paymentService/**
+        - id: auth_server_route
+          uri: lb://auth-server
+          predicates:
+            - Path=/authServer/**
       default-filters:
         - name: CircuitBreaker
           args:
@@ -53,3 +57,8 @@ eureka:
       defaultZone: http://localhost:8761/eureka/
   instance:
     prefer-ip-address: true
+
+token:
+  secretKey: tsk-32a0351c-7972-490f-8c94-e5d6c84abcdb
+
+allowPath: /authServer/api/token,/productService/product,/productService/products

@@ -2,6 +2,7 @@ package xyz.defe.sp.common.exception;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -11,6 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    @Value("${spring.application.name}")
+    private String serviceName;
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @ExceptionHandler(value = Exception.class)
@@ -25,6 +28,7 @@ public class GlobalExceptionHandler {
             response.setError(e.getMessage());
             log.error(e.getMessage(), e);
         }
+        response.setServiceName(serviceName);
         return response;
     }
 

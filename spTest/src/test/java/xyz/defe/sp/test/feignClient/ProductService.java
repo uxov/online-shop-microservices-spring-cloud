@@ -8,6 +8,7 @@ import xyz.defe.sp.common.entity.spProduct.Product;
 import xyz.defe.sp.common.pojo.ResponseData;
 
 import java.util.List;
+import java.util.Map;
 
 @FeignClient(name = "productServiceClient", url = "http://localhost:9001/productService/")
 public interface ProductService {
@@ -16,4 +17,7 @@ public interface ProductService {
 
     @GetMapping("products/{ids}")
     ResponseData<List<Product>> getByIds(@PathVariable String ids);
+
+    @GetMapping("quantity/{ids}")
+    ResponseData<Map<String, Integer>> getQuantity(@PathVariable String ids);
 }

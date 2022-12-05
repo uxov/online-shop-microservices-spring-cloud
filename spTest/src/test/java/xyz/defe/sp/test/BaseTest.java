@@ -7,11 +7,12 @@ public class BaseTest {
     public ResponseData request(Runnable func) {
         ResponseData responseData = func.run();
         if (!Strings.isNullOrEmpty(responseData.getError())) {
-            System.out.println("ERROR: " + responseData.getError());
+            System.out.println(responseData.getServiceName() + " - ERROR: " + responseData.getError());
         }
         if (!Strings.isNullOrEmpty(responseData.getMessage())) {
-            System.out.println("INFO: " + responseData.getMessage());
+            System.out.println(responseData.getServiceName() + " - INFO: " + responseData.getMessage());
         }
+        System.out.println("service name : " + responseData.getServiceName());
         return responseData;
     }
 

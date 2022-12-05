@@ -109,5 +109,5 @@ public class PaymentServiceImpl implements PaymentService {
         return record;
     }
 
-
+    public Wallet getWallet(String uid) {return walletDao.findByUserId(uid);}
 }

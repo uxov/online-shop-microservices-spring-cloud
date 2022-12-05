@@ -2,6 +2,7 @@ package xyz.defe.sp.common.response;
 
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,6 +17,8 @@ import xyz.defe.sp.common.pojo.ResponseData;
 public class CustomResponseBodyAdvice implements ResponseBodyAdvice<Object> {
     @Autowired
     private Gson gson;
+    @Value("${spring.application.name}")
+    private String serviceName;
 
     @Override
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
@@ -26,15 +29,16 @@ public class CustomResponseBodyAdvice implements ResponseBodyAdvice<Object> {
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType,
                                         Class<? extends HttpMessageConverter<?>> selectedConverterType,
                                         ServerHttpRequest request, ServerHttpResponse response) {
+        ResponseData responseData;
         if (body instanceof ResponseData) {
-            return body;
+            responseData = (ResponseData) body;
         } else {
-            ResponseData responseData = new ResponseData();
+            responseData = new ResponseData();
             responseData.setData(body);
             responseData.setStatus(HttpStatus.OK.value());
-//            if (body instanceof String) {return gson.toJson(responseData);}
-            return responseData;
         }
+        responseData.setServiceName(serviceName);
+        return responseData;
     }
 
 }

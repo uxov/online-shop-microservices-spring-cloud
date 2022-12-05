@@ -1,4 +1,4 @@
-package xyz.defe.sp.web.api;
+package xyz.defe.sp.auth.service;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import xyz.defe.sp.common.entity.spUser.Account;
 import xyz.defe.sp.common.pojo.ResponseData;
 
-@FeignClient(name = "userServiceClient", url = "${gateway.url}/userService/")
-public interface UserServiceFeignClient {
+@FeignClient(value = "${user-service.url}")
+public interface UserFeignClient {
     @PostMapping("verify")
     ResponseData<Account> verify(@RequestParam String uname, @RequestParam String pwd);
 }

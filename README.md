@@ -10,6 +10,7 @@
 - RedissionLock  
 - RabbitMQ
 - RabbitMQ RPC - Request / Reply Pattern
+- JWT
 
 ## Overview
 ![Overview](./images/sp-overview.png)  
@@ -17,9 +18,12 @@
 ### Order Process
 ![Order Process](./images/order-process.png)
 
+### API Token Authentication
+![API Token Authentication](./images/sp-token-authentication.png)
+
 ## Run And Test  
 ### Requirements
-- JDK 18
+- JDK 19
 - Gradle
 - Database
 - RabbitMQ
@@ -43,7 +47,7 @@ gradle build
 ### Run
 1. Start Eureka server: `eurekaServer`
 
-2. Start services: `spProduct, spUser, spOrder, spPayment`  
+2. Start services: `authServer, spProduct, spUser, spOrder, spPayment`  
 
 3. Start gateway: `gateway`
 
