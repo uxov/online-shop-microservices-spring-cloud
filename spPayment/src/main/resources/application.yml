@@ -1,5 +1,5 @@
 server:
-  port: 9004
+  port: 9400
   servlet:
     context-path: /paymentService
 spring:

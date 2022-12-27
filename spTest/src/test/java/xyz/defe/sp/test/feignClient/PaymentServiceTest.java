@@ -29,7 +29,7 @@ public class PaymentServiceTest {
         assertTrue(!orderList.isEmpty());
         String orderId = orderList.get(0).getId();
         assertTrue(!Strings.isNullOrEmpty(orderId));
-        PaymentLog record = paymentService.pay(orderId).getData();
+        PaymentLog record = paymentService.pay(user.getId(), orderId).getData();
         assertNotNull(record);
         assertEquals(orderId, record.getOrderId());
     }

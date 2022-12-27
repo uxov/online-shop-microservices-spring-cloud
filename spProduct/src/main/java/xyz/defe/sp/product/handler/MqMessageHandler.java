@@ -12,18 +12,19 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Service;
 import xyz.defe.sp.common.Const;
 import xyz.defe.sp.common.pojo.OrderMsg;
-import xyz.defe.sp.product.service.ProductService;
+import xyz.defe.sp.product.service.DeductQuantityService;
 
 import java.io.IOException;
 
 @Service
 public class MqMessageHandler {
     @Autowired
-    private ProductService productService;
+    private DeductQuantityService deductQuantityService;
     final Logger log = LoggerFactory.getLogger(this.getClass());
 
     //listen messages from ORDER SERVICE
-    //RabbitMQ RPC - Request/Reply Pattern - process product quantity deduction request from ORDER SERVICE
+    //RabbitMQ RPC - Request/Reply Pattern
+    //process product quantity deduction request from ORDER SERVICE
     @SendTo(Const.QUEUE_DEDUCT_QUANTITY_REPLY)
     @RabbitListener(queuesToDeclare = @Queue(Const.QUEUE_DEDUCT_QUANTITY_REQUEST))  //it will create queue if not exists
     public int deductQuantityHandle(OrderMsg msg, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException {
@@ -34,8 +35,9 @@ public class MqMessageHandler {
         //if not add catch block,when exception throw out,exception info will keep print
         //because the message is not be consumed and MQ server will keep resend message
         try {
-            result = productService.checkAndDeduct(msg.getOrderId(), msg.getCounterMap());
+            deductQuantityService.checkAndDeduct(msg.getOrderId(), msg.getCounterMap());
             channel.basicAck(tag, false);
+            result = 1;
         } catch (Exception e) {
             //drop message
             channel.basicAck(tag, false);

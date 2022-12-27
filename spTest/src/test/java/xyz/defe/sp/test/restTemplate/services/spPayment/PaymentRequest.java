@@ -10,6 +10,7 @@ import xyz.defe.sp.common.entity.spPayment.Wallet;
 import xyz.defe.sp.common.pojo.ResponseData;
 import xyz.defe.sp.common.rest.RestUtil;
 import xyz.defe.sp.test.BaseTest;
+import xyz.defe.sp.test.config.HeaderConfig;
 
 @Component
 public class PaymentRequest extends BaseTest {
@@ -17,9 +18,10 @@ public class PaymentRequest extends BaseTest {
     private Gson gson;
     @Autowired
     private RestTemplate rest;
-    private final String baseURL = "http://localhost:9004/paymentService/";
+    private final String baseURL = "http://localhost:9400/paymentService/";
 
-    public PaymentLog pay(String orderId) {
+    public PaymentLog pay(String uid, String orderId) {
+        HeaderConfig.uid = uid;
         ResponseData<PaymentLog> responseData = request(() -> {
             return RestUtil.INSTANCE.set(rest).post(baseURL + "pay?orderId={orderId}",
                             new ParameterizedTypeReference<ResponseData<PaymentLog>>() {}, orderId);

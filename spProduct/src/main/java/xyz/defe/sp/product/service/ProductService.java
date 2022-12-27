@@ -23,14 +23,5 @@ public interface ProductService {
      */
     Map<String, Integer> getQuantity(String ids);
 
-    /**
-     * @param counterMap orderId
-     * @param counterMap {productId : count}
-     * @return
-     */
-    int deductQuantity(String orderId, Map<String, Integer> counterMap);
-
-    int checkAndDeduct(String orderId, Map<String, Integer> counterMap);
-
     Set<String> restoreProductQuantity(Map<String, Map<String, Integer>> restoreMap);
 }

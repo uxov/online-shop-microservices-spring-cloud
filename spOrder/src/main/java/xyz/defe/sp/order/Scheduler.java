@@ -1,5 +1,7 @@
 package xyz.defe.sp.order;
 
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,25 +16,36 @@ public class Scheduler {
     private SendMsgToMQ sendMsgToMQ;
     @Autowired
     private OrderService orderService;
+    @Autowired
+    public RedissonClient redisson;
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Scheduled(fixedRate = 3000) //millis
     public void checkAndSendMessage() {
+        //to make sure only run once when running multiple service instances
+        RLock lock = redisson.getLock("scheduledTask-spOrder-checkAndSendMessage");
+        if (!lock.tryLock()) {return;}
         try {
             sendMsgToMQ.resendOrderMsg();
         } catch (Exception e) {
             log.error(e.getMessage());
             e.printStackTrace();
+        } finally {
+            lock.unlock();
         }
     }
 
     @Scheduled(fixedRate = 300000)
     public void checkExpiredOrders() {
+        RLock lock = redisson.getLock("scheduledTask-spOrder-checkExpiredOrders");
+        if (!lock.tryLock()) {return;}
         try {
             orderService.processExpiredOrders();
         } catch (Exception e) {
             log.error(e.getMessage());
             e.printStackTrace();
+        } finally {
+            lock.unlock();
         }
     }
 }

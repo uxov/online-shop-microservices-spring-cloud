@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 //request to spWeb
-@FeignClient(name = "webClient", url = "http://localhost:9090/")
+@FeignClient(name = "webClient", url = "http://localhost:8000/")
 public interface SpWeb {
     @GetMapping("product/list")
     ResponseData<List<Product>> getProducts(@RequestParam int pageNum, @RequestParam int pageSize);

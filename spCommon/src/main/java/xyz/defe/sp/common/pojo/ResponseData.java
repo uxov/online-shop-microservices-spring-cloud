@@ -13,39 +13,44 @@ public class ResponseData<T> implements Serializable {
         return status;
     }
 
-    public void setStatus(int status) {
+    public ResponseData<T> setStatus(int status) {
         this.status = status;
+        return this;
     }
 
     public T getData() {
         return data;
     }
 
-    public void setData(T data) {
+    public ResponseData<T> setData(T data) {
         this.data = data;
+        return this;
     }
 
     public String getMessage() {
         return message;
     }
 
-    public void setMessage(String message) {
+    public ResponseData<T> setMessage(String message) {
         this.message = message;
+        return this;
     }
 
     public String getError() {
         return error;
     }
 
-    public void setError(String error) {
+    public ResponseData<T> setError(String error) {
         this.error = error;
+        return this;
     }
 
     public String getServiceName() {
         return serviceName;
     }
 
-    public void setServiceName(String serviceName) {
+    public ResponseData<T> setServiceName(String serviceName) {
         this.serviceName = serviceName;
+        return this;
     }
 }

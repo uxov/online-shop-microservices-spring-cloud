@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import xyz.defe.sp.common.entity.spPayment.Wallet;
 import xyz.defe.sp.common.entity.spUser.ApiToken;
 import xyz.defe.sp.test.BaseTest;
-import xyz.defe.sp.test.config.TokenConfig;
+import xyz.defe.sp.test.config.HeaderConfig;
 
 @SpringBootTest
 public class ApiTokenTest extends BaseTest {
@@ -27,10 +27,10 @@ public class ApiTokenTest extends BaseTest {
     void getWallet() {
         // get wallet with token
         System.out.println("get wallet with token");
-        TokenConfig.token = "";
+        HeaderConfig.token = "";
         ApiToken apiToken = api.getToken("mike", "123").getData();
         Assertions.assertNotNull(apiToken);
-        TokenConfig.token = apiToken.getToken();
+        HeaderConfig.token = apiToken.getToken();
         String uid = apiToken.getUid();
         Wallet wallet = (Wallet) request(() -> api.getWallet(uid)).getData();
         Assertions.assertNotNull(wallet);
@@ -40,7 +40,7 @@ public class ApiTokenTest extends BaseTest {
 
         // get wallet without token
         System.out.println("get wallet without token");
-        TokenConfig.token = "";
+        HeaderConfig.token = "";
         Wallet wallet1 = (Wallet) request(() -> api.getWallet(uid)).getData();
         Assertions.assertNull(wallet1);
     }

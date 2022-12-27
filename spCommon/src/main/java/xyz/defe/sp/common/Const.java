@@ -15,8 +15,11 @@ public class Const {
     public static final String ROUTING_KEY_DEDUCT_QUANTITY_REQUEST = "orderProcess.deductQuantity.request";
     public static final String ROUTING_KEY_DEDUCT_QUANTITY_REPLY = "orderProcess.deductQuantity.reply";
 
-    public static final String LOCK_KEY_PRODUCTS = "lockForProducts";
+    public static final String LOCK_KEY_PRODUCT_GLOBAL = "productGlobalLock";
+    public static final String LOCK_KEY_PRODUCT_PREFIX = "lockForProduct-";
     public static final String LOCK_KEY_ORDER_TOKEN_PREFIX = "orderTokenLock-";
+    public static final String LK_ORDER_DEDUCT_QUANTITY_PRE = "orderDeductQuantityLock-";
+    public static final String USER_LOCK_FOR_PAYMENT_PRE = "userLockForPayment-";
 
     public static final String OPERATION_SET_ORDER_PAID = "setOrderPaid";
 

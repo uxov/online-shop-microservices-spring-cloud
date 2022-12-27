@@ -20,9 +20,7 @@ public class ProductController {
     @PostMapping("")
     public Object addProducts(@RequestBody List<Product> products) {
         productService.addProducts(products);
-        ResponseData responseData = new ResponseData();
-        responseData.setMessage("added products successful");
-        return responseData;
+        return new ResponseData().setMessage("added products successful");
     }
 
     @GetMapping("products")

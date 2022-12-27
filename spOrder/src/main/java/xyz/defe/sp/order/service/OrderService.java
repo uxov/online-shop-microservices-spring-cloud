@@ -34,9 +34,11 @@ public interface OrderService {
 
     SpOrder getPaidOrder(String id);
 
+    SpOrder getToPayOrder(String id);
+
     void saveAll(Iterable<SpOrder> entities);
 
-    public void processExpiredOrders();
+    void processExpiredOrders();
 
-    public void sendOrderMsg(OrderMsg msg, int retry);
+    void sendOrderMsg(OrderMsg msg, int retry);
 }

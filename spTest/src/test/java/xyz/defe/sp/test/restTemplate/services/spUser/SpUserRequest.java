@@ -17,7 +17,7 @@ import java.util.Map;
 public class SpUserRequest extends BaseTest {
     @Autowired
     private RestTemplate rest;
-    private static String baseURL = "http://localhost:9002/userService/";
+    private static String baseURL = "http://localhost:9200/userService/";
 
     public Account verify(String uname, String pwd) {
         Map<String, String> paramMap = new HashMap<>();

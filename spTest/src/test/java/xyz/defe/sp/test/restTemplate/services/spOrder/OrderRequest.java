@@ -16,7 +16,7 @@ import java.util.List;
 public class OrderRequest extends BaseTest {
     @Autowired
     private RestTemplate rest;
-    private final String baseURL = "http://localhost:9003/orderService/";
+    private final String baseURL = "http://localhost:9300/orderService/";
 
     public String getOrderToken() {
         ResponseData<String> responseData = request(() -> {

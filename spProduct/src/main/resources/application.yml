@@ -1,5 +1,5 @@
 server:
-  port: 9001
+  port: 9100
   servlet:
     context-path: /productService
 spring:
@@ -50,6 +50,6 @@ eureka:
     healthcheck:
       enabled: true
   instance:
-    statusPageUrlPath: http://localhost:9001/info
-    healthCheckUrlPath: http://localhost:9001/health
+    statusPageUrlPath: http://localhost:9100/info
+    healthCheckUrlPath: http://localhost:9100/health
     prefer-ip-address: true

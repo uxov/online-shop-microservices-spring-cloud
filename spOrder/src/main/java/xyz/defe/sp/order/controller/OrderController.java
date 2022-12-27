@@ -17,7 +17,7 @@ public class OrderController {
     public Cache cache;
 
     /**
-     * prevent duplicate submissions
+     * to prevent duplicate submissions
      * client submit order with a token
      * server verify before create order
      * @return
@@ -50,5 +50,10 @@ public class OrderController {
     @GetMapping("order/paid/{id}")
     public Object getPaidOrder(@PathVariable String id) {
         return orderService.getPaidOrder(id);
+    }
+
+    @GetMapping("order/toPay/{id}")
+    public Object getToPayOrder(@PathVariable String id) {
+        return orderService.getToPayOrder(id);
     }
 }

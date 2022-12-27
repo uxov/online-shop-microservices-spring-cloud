@@ -28,7 +28,7 @@ public class PaymentTest {
         Assertions.assertNotNull(orderList);
         Assertions.assertTrue(!orderList.isEmpty());
         String orderId = orderList.get(0).getId();
-        PaymentLog record = paymentRequest.pay(orderId);
+        PaymentLog record = paymentRequest.pay(user.getId(), orderId);
         Assertions.assertNotNull(record);
         Assertions.assertEquals(orderId, record.getOrderId());
     }

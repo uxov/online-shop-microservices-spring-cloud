@@ -1,6 +1,5 @@
 package xyz.defe.sp.order.service;
 
-import com.google.common.base.Strings;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import org.redisson.api.RLock;
@@ -19,6 +18,7 @@ import xyz.defe.sp.common.exception.ExceptionUtil;
 import xyz.defe.sp.common.pojo.Cart;
 import xyz.defe.sp.common.pojo.OrderMsg;
 import xyz.defe.sp.common.pojo.PageQuery;
+import xyz.defe.sp.common.util.CheckParam;
 import xyz.defe.sp.order.dao.OrderDao;
 
 import javax.transaction.Transactional;
@@ -44,32 +44,25 @@ public class OrderServiceImpl implements OrderService {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     public String getOrderToken() {
-        String token = ((int)(Math.random() * 100000000)) + "";
-        return token;
+        return UUID.randomUUID().toString();
     }
 
-    void checkCart(Cart cart) {
-        if (Strings.isNullOrEmpty(cart.getUid())) {
-            ExceptionUtil.warn("uid is empty");
-        }
-        if (cart.getCounterMap() == null || cart.getCounterMap().isEmpty()) {
-            ExceptionUtil.warn("cart is empty");
-        }
-        if (Strings.isNullOrEmpty(cart.getOrderToken())) {
-            ExceptionUtil.warn("orderToken is empty");
-        } else {
-            RLock lock = redisson.getLock(Const.LOCK_KEY_ORDER_TOKEN_PREFIX + cart.getOrderToken());
-            try {
-                lock.lock();
-                Object obj = cache.get(Const.TOKEN_ORDER_PREFIX + cart.getOrderToken());
-                if (obj == null) {
-                    cache.put(Const.TOKEN_ORDER_PREFIX + cart.getOrderToken(), 1, 5, TimeUnit.MINUTES);
-                } else {
-                    ExceptionUtil.warn("duplicate submission");
-                }
-            } finally {
-                lock.unlock();
+    private void checkCart(Cart cart) {
+        CheckParam.check(cart.getUid(), "uid is null or empty");
+        CheckParam.check(cart.getCounterMap(), "cart is null or empty");
+        CheckParam.check(cart.getOrderToken(), "orderToken is null or empty");
+
+        RLock lock = redisson.getLock(Const.LOCK_KEY_ORDER_TOKEN_PREFIX + cart.getOrderToken());
+        if (!lock.tryLock()) {return;}
+        try {
+            Object obj = cache.get(Const.TOKEN_ORDER_PREFIX + cart.getOrderToken());
+            if (obj == null) {
+                cache.put(Const.TOKEN_ORDER_PREFIX + cart.getOrderToken(), 1, 5, TimeUnit.MINUTES);
+            } else {
+                ExceptionUtil.warn("duplicate submission");
             }
+        } finally {
+            lock.unlock();
         }
     }
 
@@ -95,7 +88,7 @@ public class OrderServiceImpl implements OrderService {
         //save message to local table
         localMessageService.saveOrderMessage(message, 1);
         log.info("save OrderMsg,id={}", message.getId());
-        
+
         //send message
         sendOrderMsg(message, 1);
 
@@ -136,6 +129,38 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public void setOrderPaymentState(String id, int state) {
         orderDao.setOrderPaymentState(id, state);
+    }
+
+    /**
+     * maybe the order is processing(deduct quantity) then retry
+     * if deduct quantity successful, paymentState=1
+     * order's paymentState:{0:init state, 1:to pay, 2:paid}
+     * @param id
+     * @return
+     */
+    public SpOrder getToPayOrder(String id) {
+        int index = 0;
+        int paymentState = 1;
+        int[] millsArr = new int[]{1000, 3000, 5000, 7000, 9000};
+
+        SpOrder order = orderDao.findByIdAndPaymentState(id, paymentState);
+        while (index < millsArr.length) {
+            if (order != null && order.isValid() && order.getPaymentState() == paymentState) {
+                log.info("got the order");
+                return order;
+            }
+            log.info("getting the order... sec=" + millsArr[index]);
+            try {
+                Thread.sleep(millsArr[index]);
+            } catch (InterruptedException e) {
+                log.warn(e.getMessage());
+                e.printStackTrace();
+            }
+            order = getOrder(id);
+            index++;
+        }
+        log.warn("can not get the order in getToPayOrder(),services are busy,try it later");
+        return null;
     }
 
     /**
@@ -199,8 +224,10 @@ public class OrderServiceImpl implements OrderService {
 
     //OrderMsg has the same id as LocalMessage
     public void sendOrderMsg(OrderMsg msg, int retry) {
-        //RabbitMQ RPC - Request/Reply Pattern - send product quantity deduction request to PRODUCT SERVICE
-        asyncRabbitTemplate.convertSendAndReceive(Const.EXCHANGE_ORDER, Const.ROUTING_KEY_DEDUCT_QUANTITY_REQUEST, msg)
+        //RabbitMQ RPC - Request/Reply Pattern
+        //send product quantity deduction request to PRODUCT SERVICE
+        asyncRabbitTemplate
+                .convertSendAndReceive(Const.EXCHANGE_ORDER, Const.ROUTING_KEY_DEDUCT_QUANTITY_REQUEST, msg)
                 .addCallback(new ListenableFutureCallback<Object>() {
                     @Override
                     public void onSuccess(Object result) {

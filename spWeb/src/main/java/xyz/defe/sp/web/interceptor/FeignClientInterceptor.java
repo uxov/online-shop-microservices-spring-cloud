@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 public class FeignClientInterceptor implements RequestInterceptor {
     @Override
     public void apply(RequestTemplate template) {
-        //RequestContextHolder 可以获得当前线程绑定的 Request 对象
+        //get request object by RequestContextHolder
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         ServletRequestAttributes sra = (ServletRequestAttributes) requestAttributes;
         HttpServletRequest request = sra.getRequest();

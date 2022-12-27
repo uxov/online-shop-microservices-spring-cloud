@@ -10,4 +10,7 @@ import xyz.defe.sp.common.pojo.ResponseData;
 public interface OrderFeignClient {
     @GetMapping("order/{id}")
     ResponseData<SpOrder> getOrder(@PathVariable String id);
+
+    @GetMapping("order/toPay/{id}")
+    ResponseData<SpOrder> getToPayOrder(@PathVariable String id);
 }

@@ -23,8 +23,8 @@ public class ApiTokenController {
         ApiToken apiToken = apiTokenService.generateToken(uname, pwd);
         ResponseData responseData = new ResponseData();
         if (Strings.isNullOrEmpty(apiToken.getToken())) {
-            responseData.setStatus(HttpStatus.BAD_REQUEST.value());
-            responseData.setMessage("Invalid user name or password!");
+            responseData.setStatus(HttpStatus.BAD_REQUEST.value())
+                    .setMessage("Invalid user name or password!");
         } else {
             responseData.setData(apiToken);
         }

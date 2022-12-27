@@ -11,7 +11,7 @@ import xyz.defe.sp.common.pojo.ResponseData;
 
 import java.util.List;
 
-@FeignClient(name = "orderServiceClient", url = "http://localhost:9003/orderService/")
+@FeignClient(name = "orderServiceClient", url = "http://localhost:9300/orderService/")
 public interface OrderService {
     @GetMapping("order/token")
     ResponseData<String> getOrderToken();

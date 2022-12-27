@@ -10,7 +10,7 @@ import xyz.defe.sp.common.pojo.ResponseData;
 import java.util.List;
 import java.util.Map;
 
-@FeignClient(name = "productServiceClient", url = "http://localhost:9001/productService/")
+@FeignClient(name = "productServiceClient", url = "http://localhost:9100/productService/")
 public interface ProductService {
     @GetMapping("products")
     ResponseData<List<Product>> getProducts(@RequestParam int pageNum, @RequestParam int pageSize);

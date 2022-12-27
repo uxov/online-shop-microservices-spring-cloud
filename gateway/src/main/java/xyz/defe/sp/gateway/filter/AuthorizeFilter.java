@@ -40,7 +40,6 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
         System.out.println(request.getMethod().name() + " - " + path);
         if (!startWithAllowPath(path, allowPath)) {
             String token = request.getHeaders().getFirst("Authorization");
-            System.out.println("token = " + token);
             if (Strings.isNullOrEmpty(token)) {
                 return getVoidMono(response, HttpStatus.UNAUTHORIZED.value(), "Token is null or empty!");
             }

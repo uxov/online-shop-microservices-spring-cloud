@@ -20,9 +20,7 @@ public class AccountController {
     @PostMapping("")
     public Object createAccounts(@RequestBody List<Account> accounts) {
         accountService.createAccounts(accounts);
-        ResponseData responseData = new ResponseData();
-        responseData.setMessage("created accounts successful");
-        return responseData;
+        return new ResponseData().setMessage("created accounts successful");
     }
 
     @PostMapping("verify")

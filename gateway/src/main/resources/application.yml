@@ -16,7 +16,7 @@ spring:
     gateway:
       routes:
         - id: sp_product_route
-          #uri: http://localhost:9001
+          #uri: http://localhost:port
           # get from Eureka server
           uri: lb://sp-product-service
           predicates:
@@ -27,17 +27,14 @@ spring:
                 name: psFallback
                 fallbackUri: forward:/productServiceFallback
         - id: sp_user_route
-          #uri: http://localhost:9002/
           uri: lb://sp-user-service
           predicates:
             - Path=/userService/**
         - id: sp_order_route
-          #uri: http://localhost:9003/
           uri: lb://sp-order-service
           predicates:
             - Path=/orderService/**
         - id: sp_payment_route
-          #uri: http://localhost:9004/
           uri: lb://sp-payment-service
           predicates:
             - Path=/paymentService/**

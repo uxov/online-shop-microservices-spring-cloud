@@ -1,10 +1,7 @@
 package xyz.defe.sp.payment.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import xyz.defe.sp.common.entity.spPayment.Wallet;
 import xyz.defe.sp.common.response.ResponseDataResult;
 import xyz.defe.sp.payment.service.PaymentService;
@@ -21,8 +18,8 @@ public class PaymentController {
     }
 
     @PostMapping("pay")
-    public Object pay(String orderId) {
-        return paymentService.pay(orderId);
+    public Object pay(@RequestHeader("uid") String uid, String orderId) {
+        return paymentService.checkAndPay(uid, orderId);
     }
 
     @GetMapping("wallet")

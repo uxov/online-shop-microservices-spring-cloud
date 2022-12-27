@@ -15,7 +15,7 @@ import java.util.List;
 public class ProductRequest extends BaseTest {
     @Autowired
     private RestTemplate rest;
-    final String baseURL = "http://localhost:9001/productService/";
+    final String baseURL = "http://localhost:9100/productService/";
 
     public List<Product> getProducts() {
         ResponseData<List<Product>> responseData = request(() -> {

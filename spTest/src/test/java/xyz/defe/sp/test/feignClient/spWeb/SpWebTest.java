@@ -9,7 +9,7 @@ import xyz.defe.sp.common.entity.spOrder.SpOrder;
 import xyz.defe.sp.common.entity.spPayment.PaymentLog;
 import xyz.defe.sp.common.entity.spProduct.Product;
 import xyz.defe.sp.common.pojo.Cart;
-import xyz.defe.sp.test.config.TokenConfig;
+import xyz.defe.sp.test.config.HeaderConfig;
 
 import java.util.List;
 import java.util.Map;
@@ -22,7 +22,7 @@ public class SpWebTest {
 
     @Test
     public void request() {
-        TokenConfig.token = "";
+        HeaderConfig.token = "";
 
         //a. get products
         List<Product> products = spWeb.getProducts(1, 10).getData();
@@ -35,7 +35,7 @@ public class SpWebTest {
         String token = map.get("token");
         Assertions.assertTrue(!Strings.isNullOrEmpty(uid));
         Assertions.assertTrue(!Strings.isNullOrEmpty(token));
-        TokenConfig.token = token;
+        HeaderConfig.token = token;
 
         //c. add products to cart and submit the order
         String orderToken = spWeb.getOrderToken().getData();

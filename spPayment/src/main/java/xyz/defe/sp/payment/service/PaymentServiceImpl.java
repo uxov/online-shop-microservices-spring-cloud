@@ -1,8 +1,9 @@
 package xyz.defe.sp.payment.service;
 
-import com.google.common.base.Strings;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +14,9 @@ import xyz.defe.sp.common.entity.spPayment.PaymentLog;
 import xyz.defe.sp.common.entity.spPayment.Wallet;
 import xyz.defe.sp.common.entity.spProduct.Product;
 import xyz.defe.sp.common.exception.ExceptionUtil;
-import xyz.defe.sp.common.exception.WarnException;
 import xyz.defe.sp.common.pojo.Cart;
 import xyz.defe.sp.common.pojo.OrderMsg;
+import xyz.defe.sp.common.util.CheckParam;
 import xyz.defe.sp.payment.dao.PaymentLogDao;
 import xyz.defe.sp.payment.dao.WalletDao;
 
@@ -29,6 +30,8 @@ public class PaymentServiceImpl implements PaymentService {
     private Gson gson;
     @Autowired
     private WalletDao walletDao;
+    @Autowired
+    public RedissonClient redisson;
     @Autowired
     private PaymentLogDao paymentLogDao;
     @Autowired
@@ -44,17 +47,28 @@ public class PaymentServiceImpl implements PaymentService {
         return walletDao.saveAndFlush(wallet);
     }
 
-    private void checkOrder(String orderId) {
-        if (Strings.isNullOrEmpty(orderId)) {
-            ExceptionUtil.warn("orderId is empty");}
-        PaymentLog record = paymentLogDao.findByOrderId(orderId);
-        if (record != null) {ExceptionUtil.warn("the order is paid,id="+ orderId);}
+    @Override
+    @Transactional
+    public PaymentLog checkAndPay(String uid, String orderId) {
+        CheckParam.check(uid, "uid is null or empty");
+        CheckParam.check(orderId, "orderId is null or empty");
+
+        RLock lock = getLockByUid(uid);
+        lock.lock();
+        try {
+            PaymentLog record = paymentLogDao.findByOrderId(orderId);
+            if (record != null) {
+                ExceptionUtil.warn("the order is paid,id=" + orderId);
+            }
+            return pay(orderId);
+        } finally {
+            lock.unlock();
+        }
     }
 
     @Override
     @Transactional
     public PaymentLog pay(String orderId) {
-        checkOrder(orderId);
         SpOrder order = orderService.getToPayOrder(orderId);
         if (order == null) {ExceptionUtil.warn("the order is not able to pay,id=" + orderId);}
 
@@ -62,7 +76,7 @@ public class PaymentServiceImpl implements PaymentService {
         //get user's wallet
         Wallet wallet = walletDao.findByUserId(order.getUserId());
         if (null == wallet) {
-            throw new WarnException("user's wallet not exists,uid=" + order.getUserId());
+            ExceptionUtil.warn("user's wallet not exists,uid=" + order.getUserId());
         }
 
         Cart cart = gson.fromJson(order.getCartJson(),
@@ -80,7 +94,7 @@ public class PaymentServiceImpl implements PaymentService {
         }
         double remain = wallet.getBalance().doubleValue() - sum;
         if (remain < 0) {
-            throw new WarnException("user's balance is not enough to pay the order; cost=" + sum
+            ExceptionUtil.warn("user's balance is not enough to pay the order; cost=" + sum
                     + ",balance=" + wallet.getBalance().doubleValue() + ",uid="
                     + wallet.getUserId() + ",order id="+order.getUserId());
         }
@@ -110,4 +124,13 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     public Wallet getWallet(String uid) {return walletDao.findByUserId(uid);}
+
+    /**
+     * to prevent duplicate requests and synchronize control
+     * @param uid
+     * @return
+     */
+    private RLock getLockByUid(String uid) {
+        return redisson.getLock(Const.USER_LOCK_FOR_PAYMENT_PRE + uid);
+    }
 }

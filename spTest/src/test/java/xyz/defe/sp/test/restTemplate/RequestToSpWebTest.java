@@ -14,7 +14,7 @@ import xyz.defe.sp.common.pojo.Cart;
 import xyz.defe.sp.common.pojo.ResponseData;
 import xyz.defe.sp.common.rest.RestUtil;
 import xyz.defe.sp.test.BaseTest;
-import xyz.defe.sp.test.config.TokenConfig;
+import xyz.defe.sp.test.config.HeaderConfig;
 
 import java.util.HashMap;
 import java.util.List;
@@ -24,11 +24,11 @@ import java.util.Map;
 public class RequestToSpWebTest extends BaseTest {
     @Autowired
     private RestTemplate rest;
-    private final String baseURL = "http://localhost:9090/";  //spWeb URL
+    private final String baseURL = "http://localhost:8000/";  //spWeb URL
 
     @Test
     public void request() {
-        TokenConfig.token = "";
+        HeaderConfig.token = "";
 
         //a. get products
         ResponseData responseData = request(() -> {
@@ -53,7 +53,7 @@ public class RequestToSpWebTest extends BaseTest {
         String token = (String) map.get("token");
         Assertions.assertTrue(!Strings.isNullOrEmpty(uid));
         Assertions.assertTrue(!Strings.isNullOrEmpty(token));
-        TokenConfig.token = token;
+        HeaderConfig.token = token;
 
         //c. add products to cart and submit the order
         responseData = request(() -> {
