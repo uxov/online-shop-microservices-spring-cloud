@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import xyz.defe.sp.common.entity.spOrder.SpOrder;
+import xyz.defe.sp.common.exception.ExceptionUtil;
+import xyz.defe.sp.common.pojo.ResponseData;
 
 @Service
 public class OrderService {
@@ -17,6 +19,11 @@ public class OrderService {
     }
 
     public SpOrder getToPayOrder(String orderId) {
-        return orderFeignClient.getToPayOrder(orderId).getData();
+        ResponseData<SpOrder> responseData = orderFeignClient.getToPayOrder(orderId);
+        SpOrder order = responseData.getData();
+        if (order == null) {
+            ExceptionUtil.warn(responseData.messageOrError());
+        }
+        return order;
     }
 }

@@ -8,6 +8,6 @@ import xyz.defe.sp.common.pojo.ResponseData;
 
 @FeignClient(value = "${user-service.url}")
 public interface UserFeignClient {
-    @PostMapping("verify")
+    @PostMapping("account/verify")
     ResponseData<Account> verify(@RequestParam String uname, @RequestParam String pwd);
 }

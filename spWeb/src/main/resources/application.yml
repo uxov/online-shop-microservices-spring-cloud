@@ -11,6 +11,20 @@ spring:
     date-format: yyyy-MM-dd hh:mm:ss
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
+  output.ansi.enabled: always
+  boot:
+    admin:
+      client:
+        url: http://localhost:11000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+        exclude: env,configprops
 
 gateway:
   url: http://localhost:9000
+
+allowPath: /login,/product,/actuator

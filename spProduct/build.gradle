@@ -26,10 +26,12 @@ dependencies {
 	implementation 'org.redisson:redisson-spring-boot-starter:3.17.5'
 	implementation 'org.springframework.data:spring-data-redis:2.7.2'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-amqp'
 	implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
 	implementation 'org.springframework.cloud:spring-cloud-sleuth-zipkin'
+	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {

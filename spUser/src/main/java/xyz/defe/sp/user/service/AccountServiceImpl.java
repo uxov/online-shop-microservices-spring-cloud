@@ -26,4 +26,9 @@ public class AccountServiceImpl implements AccountService {
         }
         return accountDao.findByUnameAndPwd(uname, pwd);
     }
+
+    @Override
+    public List<Account> getAll() {
+        return  accountDao.findAll();
+    }
 }

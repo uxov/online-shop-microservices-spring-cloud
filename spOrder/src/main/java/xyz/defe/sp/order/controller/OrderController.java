@@ -4,9 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import xyz.defe.sp.common.Cache;
 import xyz.defe.sp.common.Const;
+import xyz.defe.sp.common.entity.spOrder.SpOrder;
 import xyz.defe.sp.common.pojo.Cart;
 import xyz.defe.sp.common.response.ResponseDataResult;
 import xyz.defe.sp.order.service.OrderService;
+
+import java.util.List;
 
 @RestController
 @ResponseDataResult
@@ -23,12 +26,12 @@ public class OrderController {
      * @return
      */
     @GetMapping("order/token")
-    public Object getOrderToken() {
+    public String getOrderToken() {
         return orderService.getOrderToken();
     }
 
     @PostMapping("order")
-    public Object newOrder(@RequestBody Cart cart) {
+    public SpOrder newOrder(@RequestBody Cart cart) {
         try {
             return orderService.newOrder(cart);
         } catch (Throwable e) {
@@ -38,22 +41,22 @@ public class OrderController {
     }
 
     @GetMapping("order/{id}")
-    public Object getOrder(@PathVariable String id) {
+    public SpOrder getOrder(@PathVariable String id) {
         return orderService.getOrder(id);
     }
 
     @GetMapping("order/unpaid")
-    public Object getUnpaidOrders(String uid) {
+    public List<SpOrder> getUnpaidOrders(String uid) {
         return orderService.getUnpaidOrders(uid);
     }
 
     @GetMapping("order/paid/{id}")
-    public Object getPaidOrder(@PathVariable String id) {
+    public SpOrder getPaidOrder(@PathVariable String id) {
         return orderService.getPaidOrder(id);
     }
 
     @GetMapping("order/toPay/{id}")
-    public Object getToPayOrder(@PathVariable String id) {
+    public SpOrder getToPayOrder(@PathVariable String id) {
         return orderService.getToPayOrder(id);
     }
 }

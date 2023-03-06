@@ -26,7 +26,6 @@ public class LoginController {
         ResponseData<ApiToken> responseData = loginService.login(uname, pwd);
         ApiToken apiToken = responseData.getData();
         if (apiToken == null) {
-            responseData.setMessage("Login failed,user name or password invalid!");
             return responseData;
         }
         Map result = new HashMap();

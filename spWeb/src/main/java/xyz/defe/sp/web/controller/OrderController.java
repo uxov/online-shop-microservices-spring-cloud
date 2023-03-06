@@ -2,7 +2,9 @@ package xyz.defe.sp.web.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import xyz.defe.sp.common.entity.spOrder.SpOrder;
 import xyz.defe.sp.common.pojo.Cart;
+import xyz.defe.sp.common.pojo.ResponseData;
 import xyz.defe.sp.common.response.ResponseDataResult;
 import xyz.defe.sp.web.service.OrderService;
 
@@ -14,22 +16,22 @@ public class OrderController {
     private OrderService orderService;
 
     @GetMapping("orderToken")
-    public Object getOrderToken() {
+    public ResponseData<String> getOrderToken() {
         return orderService.getOrderToken();
     }
 
     @PostMapping
-    public Object newOrder(@RequestBody Cart cart) {
+    public ResponseData<SpOrder> newOrder(@RequestBody Cart cart) {
         return orderService.newOrder(cart);
     }
 
     @GetMapping("{orderId}")
-    public Object getOrder(@PathVariable String orderId) {
+    public ResponseData<SpOrder> getOrder(@PathVariable String orderId) {
         return orderService.getOrder(orderId);
     }
 
     @GetMapping("paid/{id}")
-    public Object getPaidOrder(@PathVariable String id) {
+    public ResponseData<SpOrder> getPaidOrder(@PathVariable String id) {
         return orderService.getPaidOrder(id);
     }
 }

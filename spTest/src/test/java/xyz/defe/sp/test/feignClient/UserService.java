@@ -11,9 +11,9 @@ import java.util.List;
 
 @FeignClient(name = "userServiceClient", url = "http://localhost:9200/userService/")
 public interface UserService {
-    @PostMapping("verify")
+    @PostMapping("account/verify")
     ResponseData<Account> verify(@RequestParam String uname, @RequestParam String pwd);
 
-    @PostMapping("/")
+    @PostMapping("accounts")
     ResponseData createAccounts(@RequestBody List<Account> accounts);
 }

@@ -1,7 +1,6 @@
 package xyz.defe.sp.test.restTemplate.services.spOrder;
 
 import org.assertj.core.util.Strings;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,10 +8,13 @@ import xyz.defe.sp.common.entity.spOrder.SpOrder;
 import xyz.defe.sp.common.entity.spProduct.Product;
 import xyz.defe.sp.common.entity.spUser.Account;
 import xyz.defe.sp.common.pojo.Cart;
-import xyz.defe.sp.test.restTemplate.services.spUser.SpUserRequest;
+import xyz.defe.sp.test.Users;
 import xyz.defe.sp.test.restTemplate.services.spProduct.ProductRequest;
+import xyz.defe.sp.test.restTemplate.services.spUser.SpUserRequest;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class OrderTest {
@@ -25,31 +27,28 @@ public class OrderTest {
 
     @Test
     void getOrderToken() {
-        String orderToken = orderRequest.getOrderToken();
-        Assertions.assertTrue(!Strings.isNullOrEmpty(orderToken));
-        System.out.println("orderToken="+orderToken);
+        String orderToken = orderRequest.getOrderToken().getData();
+        assertTrue(!Strings.isNullOrEmpty(orderToken));
     }
 
     @Test
     void submitOrder() {
-        Account account = spUserRequest.verify("mike", "123");
-        Assertions.assertNotNull(account);
+        Account user = spUserRequest.verify(Users.MIKE.uname, Users.MIKE.pwd).getData();
+        assertEquals(Users.MIKE.uname, user.getUname());
 
-        String orderToken = orderRequest.getOrderToken();
-        Assertions.assertTrue(!Strings.isNullOrEmpty(orderToken));
+        String orderToken = orderRequest.getOrderToken().getData();
+        assertTrue(!Strings.isNullOrEmpty(orderToken));
 
-        List<Product> products = productRequest.getProducts();
-        Assertions.assertNotNull(products);
-        Assertions.assertTrue(!products.isEmpty());
+        List<Product> products = productRequest.getProducts().getData();
+        assertTrue(!products.isEmpty());
 
         Cart cart = new Cart();
-        cart.setUid(account.getId());
+        cart.setUid(user.getId());
         cart.setOrderToken(orderToken);
         cart.getCounterMap().put(products.get(0).getId(), 1);
         cart.getCounterMap().put(products.get(1).getId(), 2);
-        SpOrder order = orderRequest.submitOrder(cart);
-        Assertions.assertNotNull(order);
-        Assertions.assertNotNull(order.getId());
+        SpOrder order = orderRequest.submitOrder(cart).getData();
+        assertTrue(!Strings.isNullOrEmpty(order.getId()));
     }
 
 }

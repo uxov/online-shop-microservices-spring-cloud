@@ -27,6 +27,7 @@ dependencies {
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
 	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
+	testImplementation 'org.junit.platform:junit-platform-suite-engine'
 	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
@@ -41,6 +42,13 @@ dependencyManagement {
 
 test {
 	useJUnitPlatform()
+
+	filter {
+		includeTestsMatching "xyz.defe.sp.test.TestAllSuit"
+	}
+	testLogging {
+		events = ["failed", "passed", "skipped"]
+	}
 }
 
 //test.enabled = false

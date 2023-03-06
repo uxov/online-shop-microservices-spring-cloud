@@ -1,8 +1,10 @@
 package xyz.defe.sp.test.feignClient.api;
 
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import xyz.defe.sp.common.entity.spPayment.Wallet;
 import xyz.defe.sp.common.entity.spProduct.Product;
@@ -21,5 +23,5 @@ public interface Api {
     ResponseData<ApiToken> getToken(@RequestParam String uname, @RequestParam String pwd);
 
     @GetMapping("paymentService/wallet")
-    ResponseData<Wallet> getWallet(@RequestParam String uid);
+    ResponseData<Wallet> getWallet(@RequestParam String uid, @RequestHeader(HttpHeaders.AUTHORIZATION) String token);
 }

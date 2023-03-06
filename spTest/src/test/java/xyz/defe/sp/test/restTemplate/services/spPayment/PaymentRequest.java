@@ -1,6 +1,5 @@
 package xyz.defe.sp.test.restTemplate.services.spPayment;
 
-import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
@@ -9,29 +8,24 @@ import xyz.defe.sp.common.entity.spPayment.PaymentLog;
 import xyz.defe.sp.common.entity.spPayment.Wallet;
 import xyz.defe.sp.common.pojo.ResponseData;
 import xyz.defe.sp.common.rest.RestUtil;
-import xyz.defe.sp.test.BaseTest;
 import xyz.defe.sp.test.config.HeaderConfig;
 
 @Component
-public class PaymentRequest extends BaseTest {
-    @Autowired
-    private Gson gson;
+public class PaymentRequest {
     @Autowired
     private RestTemplate rest;
     private final String baseURL = "http://localhost:9400/paymentService/";
 
-    public PaymentLog pay(String uid, String orderId) {
+    public ResponseData<PaymentLog> pay(String uid, String orderId) {
         HeaderConfig.uid = uid;
-        ResponseData<PaymentLog> responseData = request(() -> {
-            return RestUtil.INSTANCE.set(rest).post(baseURL + "pay?orderId={orderId}",
-                            new ParameterizedTypeReference<ResponseData<PaymentLog>>() {}, orderId);
-        });
-        return responseData.getData();
+        return RestUtil.INSTANCE.set(rest).post(
+                baseURL + "pay?orderId={orderId}",
+                new ParameterizedTypeReference<ResponseData<PaymentLog>>() {}, orderId);
     }
 
-    public Wallet createUserWallet(Wallet wallet) {
-        ResponseData<Wallet> responseData = RestUtil.INSTANCE.set(rest)
+    public ResponseData<Wallet> createUserWallet(Wallet wallet) {
+        return RestUtil.INSTANCE.set(rest)
                 .post(baseURL + "wallet", wallet, new ParameterizedTypeReference<ResponseData<Wallet>>() {});
-        return responseData.getData();
     }
+
 }

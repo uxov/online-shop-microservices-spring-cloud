@@ -8,38 +8,26 @@ import xyz.defe.sp.common.entity.spOrder.SpOrder;
 import xyz.defe.sp.common.pojo.Cart;
 import xyz.defe.sp.common.pojo.ResponseData;
 import xyz.defe.sp.common.rest.RestUtil;
-import xyz.defe.sp.test.BaseTest;
-
-import java.util.List;
 
 @Component
-public class OrderRequest extends BaseTest {
+public class OrderRequest {
     @Autowired
     private RestTemplate rest;
     private final String baseURL = "http://localhost:9300/orderService/";
 
-    public String getOrderToken() {
-        ResponseData<String> responseData = request(() -> {
-            return RestUtil.INSTANCE.set(rest).get(baseURL + "order/token");
-        });
-        return responseData.getData();
+    public ResponseData<String> getOrderToken() {
+        return RestUtil.INSTANCE.set(rest).get(baseURL + "order/token");
     }
 
-    public SpOrder submitOrder(Cart cart) {
-        ResponseData<SpOrder> responseData  = request(() -> {
-            return RestUtil.INSTANCE.set(rest)
-                    .post(baseURL + "order", cart, new ParameterizedTypeReference<ResponseData<SpOrder>>() {});
-        });
-        return responseData.getData();
+    public ResponseData<SpOrder> submitOrder(Cart cart) {
+        return RestUtil.INSTANCE.set(rest)
+                .post(baseURL + "order", cart, new ParameterizedTypeReference<ResponseData<SpOrder>>() {});
     }
 
-   public List<SpOrder> getUnpaidOrders(String uid) {
-       ResponseData<List<SpOrder>> responseData = request(() -> {
-           return RestUtil.INSTANCE.set(rest)
-                   .get(baseURL + "order/unpaid?uid={uid}",
-                           new ParameterizedTypeReference<ResponseData<List<SpOrder>>>(){}, uid);
-       });
-       return responseData.getData();
-   }
+    public ResponseData<SpOrder> getToPayOrder(String orderId) {
+       return RestUtil.INSTANCE.set(rest)
+               .get(baseURL + "order/toPay/{orderId}",
+                       new ParameterizedTypeReference<ResponseData<SpOrder>>(){}, orderId);
+    }
 
 }

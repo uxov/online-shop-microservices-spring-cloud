@@ -1,0 +1,15 @@
+server:
+  port: 11000
+spring:
+  application:
+    name: spring-boot-admin
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+    fetch-registry: true
+    registry-fetch-interval-seconds: 8
+  instance:
+    prefer-ip-address: true
+

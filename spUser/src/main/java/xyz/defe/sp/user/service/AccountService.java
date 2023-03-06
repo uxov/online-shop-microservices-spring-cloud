@@ -8,4 +8,6 @@ public interface AccountService {
     void createAccounts(List<Account> accounts);
 
     Account verify(String uname, String pwd);
+
+    List<Account> getAll();
 }

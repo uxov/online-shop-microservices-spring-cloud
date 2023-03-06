@@ -21,6 +21,7 @@ public class FallbackController {
         log.error("request failed: {}", delegate.getRequest().getURI().getPath(), exception);
 
         ResponseData responseData = new ResponseData();
+        responseData.setServiceName("Gateway");
         responseData.setStatus(HttpStatus.SERVICE_UNAVAILABLE.value());
         responseData.setError(exception.getMessage());
         responseData.setMessage("request failed");

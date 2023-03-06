@@ -16,6 +16,7 @@ import xyz.defe.sp.common.entity.spOrder.SpOrder;
 import xyz.defe.sp.common.entity.spProduct.Product;
 import xyz.defe.sp.common.exception.ExceptionUtil;
 import xyz.defe.sp.common.pojo.Cart;
+import xyz.defe.sp.common.pojo.DeductionResult;
 import xyz.defe.sp.common.pojo.OrderMsg;
 import xyz.defe.sp.common.pojo.PageQuery;
 import xyz.defe.sp.common.util.CheckParam;
@@ -143,23 +144,30 @@ public class OrderServiceImpl implements OrderService {
         int paymentState = 1;
         int[] millsArr = new int[]{1000, 3000, 5000, 7000, 9000};
 
-        SpOrder order = orderDao.findByIdAndPaymentState(id, paymentState);
+        SpOrder order = orderDao.findById(id).get();
+        if (order == null) {
+            ExceptionUtil.warn("The order does not exist! id=" + id);
+        } else if (!order.isValid()){
+            ExceptionUtil.warn("order is invalid: " + order.getInvalidReason());
+        } else if (order.getPaymentState() == paymentState) {
+            return order;
+        }
         while (index < millsArr.length) {
-            if (order != null && order.isValid() && order.getPaymentState() == paymentState) {
-                log.info("got the order");
-                return order;
-            }
-            log.info("getting the order... sec=" + millsArr[index]);
             try {
                 Thread.sleep(millsArr[index]);
             } catch (InterruptedException e) {
                 log.warn(e.getMessage());
                 e.printStackTrace();
             }
-            order = getOrder(id);
+            order = orderDao.getToPayOrder(id);
+            if (order != null) {
+                log.info("got the order");
+                return order;
+            }
+            log.info("getting the order... sec=" + millsArr[index]);
             index++;
         }
-        log.warn("can not get the order in getToPayOrder(),services are busy,try it later");
+        ExceptionUtil.warn("can not get the order in getToPayOrder(),services are busy,try it later");
         return null;
     }
 
@@ -231,15 +239,16 @@ public class OrderServiceImpl implements OrderService {
                 .addCallback(new ListenableFutureCallback<Object>() {
                     @Override
                     public void onSuccess(Object result) {
-                        log.info("got product quantity deduction result from PRODUCT SERVICE,result={},order id={}", result, msg.getOrderId());
-                        int flag = (int) result;
-                        if (flag == 0) {    //if deduct quantity failed then set order invalid
-                            setOrderState(msg.getOrderId(), false);
-                            log.info("deduct quantity failed,set order invalid,order id={}", msg.getOrderId());
-                        } else if (flag == 1) {
+                        DeductionResult deductionResult = (DeductionResult) result;
+                        log.info("got product quantity deduction result from PRODUCT SERVICE,result={},order id={}", deductionResult.isSuccessful(), msg.getOrderId());
+
+                        if (deductionResult.isSuccessful()) {
                             //set order paymentState=1(to pay)
                             setOrderPaymentState(msg.getOrderId(), 1);
                             log.info("deduct quantity successful,set paymentState=1(to pay),order id={}", msg.getOrderId());
+                        } else {    //if deduct quantity failed then set order invalid
+                            orderDao.setOrderInvalid(msg.getOrderId(), deductionResult.getMessage());
+                            log.info("deduct quantity failed,set order invalid,order id={}", msg.getOrderId());
                         }
                     }
 

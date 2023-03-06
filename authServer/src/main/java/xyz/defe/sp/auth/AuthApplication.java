@@ -7,7 +7,9 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @EnableFeignClients
 @EnableDiscoveryClient
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {
+		"xyz.defe.sp.auth", "xyz.defe.sp.common.exception", "xyz.defe.sp.common.response"
+})
 public class AuthApplication {
 
 	public static void main(String[] args) {

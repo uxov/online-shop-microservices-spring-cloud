@@ -53,4 +53,20 @@ public class ResponseData<T> implements Serializable {
         this.serviceName = serviceName;
         return this;
     }
+
+
+    public String info() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(status + " - ");
+        sb.append("message:" + message + " - ");
+        sb.append("error:" + error + " .");
+        return sb.toString();
+    }
+
+    public String messageOrError() {
+        StringBuilder sb = new StringBuilder();
+        if (message != null && !message.equals("")) {sb.append(message + ";");}
+        if (error != null && !error.equals("")) {sb.append(error + ";");}
+        return sb.toString();
+    }
 }

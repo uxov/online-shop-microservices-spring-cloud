@@ -20,6 +20,7 @@ dependencies {
 	implementation fileTree(include: ["spCommon-0.0.1-SNAPSHOT.jar"], dir: "../spCommon/build/libs")
 
 	implementation 'com.google.code.gson:gson:+'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 	implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'

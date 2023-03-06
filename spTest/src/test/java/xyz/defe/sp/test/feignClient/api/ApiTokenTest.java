@@ -1,47 +1,42 @@
 package xyz.defe.sp.test.feignClient.api;
 
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.util.Strings;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import xyz.defe.sp.common.entity.spPayment.Wallet;
 import xyz.defe.sp.common.entity.spUser.ApiToken;
-import xyz.defe.sp.test.BaseTest;
-import xyz.defe.sp.test.config.HeaderConfig;
+import xyz.defe.sp.test.Users;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class ApiTokenTest extends BaseTest {
+public class ApiTokenTest {
     @Autowired
     private Api api;
 
     @Test
     void getToken() {
-        ApiToken apiToken = (ApiToken) request(
-                () -> api.getToken("mike", "123")
-            ).getData();
-        Assertions.assertNotNull(apiToken);
-        System.out.println("api token = " + apiToken.getToken());
+        ApiToken apiToken = api.getToken(Users.MIKE.uname, Users.MIKE.pwd).getData();
+        assertTrue(!Strings.isNullOrEmpty(apiToken.getToken()));
     }
 
     @Test
     void getWallet() {
         // get wallet with token
         System.out.println("get wallet with token");
-        HeaderConfig.token = "";
-        ApiToken apiToken = api.getToken("mike", "123").getData();
-        Assertions.assertNotNull(apiToken);
-        HeaderConfig.token = apiToken.getToken();
-        String uid = apiToken.getUid();
-        Wallet wallet = (Wallet) request(() -> api.getWallet(uid)).getData();
-        Assertions.assertNotNull(wallet);
-        System.out.println("balance = " + wallet.getBalance());
 
+        ApiToken apiToken = api.getToken(Users.MIKE.uname, Users.MIKE.pwd).getData();
+        assertTrue(!Strings.isNullOrEmpty(apiToken.getToken()));
+        Wallet wallet = api.getWallet(apiToken.getUid(), apiToken.getToken()).getData();
+        assertNotNull(wallet.getBalance());
+
+        System.out.println("balance = " + wallet.getBalance());
         System.out.println();
 
         // get wallet without token
         System.out.println("get wallet without token");
-        HeaderConfig.token = "";
-        Wallet wallet1 = (Wallet) request(() -> api.getWallet(uid)).getData();
-        Assertions.assertNull(wallet1);
+        Wallet wallet2 = api.getWallet(apiToken.getUid(), null).getData();
+        assertNull(wallet2);
     }
 }

@@ -19,6 +19,7 @@ public class SpOrder implements Serializable {
     @Column(columnDefinition = "TEXT")
     private String cartJson;
     private boolean valid = true;
+    private String invalidReason;
 
     //{0:init state, 1:to pay, 2:paid}
     private Integer paymentState = 0;
@@ -68,6 +69,14 @@ public class SpOrder implements Serializable {
 
     public void setValid(boolean valid) {
         this.valid = valid;
+    }
+
+    public String getInvalidReason() {
+        return invalidReason;
+    }
+
+    public void setInvalidReason(String invalidReason) {
+        this.invalidReason = invalidReason;
     }
 
     public Integer getPaymentState() {

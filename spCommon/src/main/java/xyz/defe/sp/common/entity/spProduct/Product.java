@@ -31,6 +31,14 @@ public class Product implements Serializable {
         this.id = UUID.randomUUID().toString();
     }
 
+    public Product(String name, BigDecimal price, Integer quantity, Date createdTime) {
+        this.id = UUID.randomUUID().toString();
+        this.name = name;
+        this.price = price;
+        this.quantity = quantity;
+        this.createdTime = createdTime;
+    }
+
     public String getId() {
         return id;
     }

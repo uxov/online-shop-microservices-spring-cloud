@@ -4,10 +4,9 @@ import com.google.common.base.Strings;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
 import org.springframework.http.HttpHeaders;
-import org.springframework.stereotype.Component;
 import xyz.defe.sp.test.config.HeaderConfig;
 
-@Component
+//@Component
 public class FeignClientInterceptor implements RequestInterceptor {
     @Override
     public void apply(RequestTemplate template) {

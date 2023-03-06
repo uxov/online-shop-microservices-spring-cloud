@@ -1,6 +1,7 @@
 package xyz.defe.sp.user.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,14 +18,17 @@ public class AccountController {
     @Autowired
     private AccountService accountService;
 
-    @PostMapping("")
-    public Object createAccounts(@RequestBody List<Account> accounts) {
+    @PostMapping("accounts")
+    public ResponseData createAccounts(@RequestBody List<Account> accounts) {
         accountService.createAccounts(accounts);
         return new ResponseData().setMessage("created accounts successful");
     }
 
-    @PostMapping("verify")
-    public Object verify(String uname, String pwd){
+    @PostMapping("account/verify")
+    public Account verify(String uname, String pwd){
         return accountService.verify(uname, pwd);
     }
+
+    @GetMapping("accounts")
+    public List<Account> getAll() {return accountService.getAll();}
 }

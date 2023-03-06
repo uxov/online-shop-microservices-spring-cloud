@@ -23,12 +23,20 @@ public interface OrderDao extends JpaRepository<SpOrder, String> {
     @Query("select o from SpOrder o where o.valid=true and o.paymentState=1")
     List<SpOrder> getUnpaidOrders();
 
+    @Query("select o from SpOrder o where id=?1 and o.valid=true and o.paymentState=1")
+    SpOrder getToPayOrder(String id);
+
     SpOrder findByIdAndPaymentState(String id, int paymentState);
 
     @Modifying
     @Transactional
     @Query("update SpOrder o set o.valid=?2 where id=?1 ")
     void setOrderState(String id, boolean state);
+
+    @Modifying
+    @Transactional
+    @Query("update SpOrder o set o.valid=false,o.invalidReason=?2 where id=?1 ")
+    void setOrderInvalid(String id, String invalidReason);
 
     @Modifying
     @Transactional

@@ -14,6 +14,7 @@ spring:
     base-url: http://localhost:9411/
     sender:
       type: web
+  output.ansi.enabled: always
 
 eureka:
   client:
@@ -21,6 +22,13 @@ eureka:
       defaultZone: http://localhost:8761/eureka/
   instance:
     prefer-ip-address: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+        exclude: env,configprops
 
 user-service:
   url: SP-USER-SERVICE/userService/

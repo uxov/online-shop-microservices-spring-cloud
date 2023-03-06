@@ -1,5 +1,6 @@
 package xyz.defe.sp.common.exception;
 
+import feign.FeignException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,8 +29,18 @@ public class GlobalExceptionHandler {
             response.setError(e.getMessage());
             log.error(e.getMessage(), e);
         }
+        e.printStackTrace();
         response.setServiceName(serviceName);
         return response;
     }
 
+    @ExceptionHandler(FeignException.class)
+    public ResponseData handleFeignException(FeignException e) {
+        ResponseData response = new ResponseData();
+        response.setStatus(e.status());
+        response.setError(e.getMessage());
+        response.setServiceName(serviceName);
+        log.error(e.getMessage(), e);
+        return response;
+    }
 }

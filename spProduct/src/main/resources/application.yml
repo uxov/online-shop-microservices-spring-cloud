@@ -39,6 +39,7 @@ spring:
     date-format: yyyy-MM-dd hh:mm:ss
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
+  output.ansi.enabled: always
 
 eureka:
   client:
@@ -47,9 +48,17 @@ eureka:
       defaultZone: http://localhost:8761/eureka/
     fetch-registry: true
     registry-fetch-interval-seconds: 8
-    healthcheck:
+    health-check:
       enabled: true
   instance:
-    statusPageUrlPath: http://localhost:9100/info
-    healthCheckUrlPath: http://localhost:9100/health
     prefer-ip-address: true
+    metadata-map:
+      management:
+        context-path: ${server.servlet.context-path}/actuator
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+        exclude: env,configprops

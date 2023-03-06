@@ -16,11 +16,6 @@ public class Config {
     @Autowired
     private RestTemplateInterceptor restTemplateInterceptor;
 
-//    @Bean
-//    public RestTemplate restTemplate() {
-//        return new RestTemplate();
-//    }
-
     @Bean
     public RestTemplate restTemplate(HttpMessageConverters bootConverters) {
         RestTemplate restTemplate = new RestTemplate(bootConverters.getConverters());

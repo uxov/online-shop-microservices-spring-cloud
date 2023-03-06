@@ -18,6 +18,7 @@ dependencies {
 	implementation 'org.springframework:spring-webmvc:5.3.22'
 	implementation 'org.springframework.data:spring-data-redis:2.7.2'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.7.3'
+	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:4.0.1'
 }
 
 shadowJar {
