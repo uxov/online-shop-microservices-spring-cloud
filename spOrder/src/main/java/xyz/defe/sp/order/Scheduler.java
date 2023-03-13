@@ -20,9 +20,9 @@ public class Scheduler {
     public RedissonClient redisson;
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    @Scheduled(fixedRate = 3000) //millis
+    @Scheduled(fixedRate = 15000) //millis
     public void checkAndSendMessage() {
-        //to make sure only run once when running multiple service instances
+        //make sure to run only once when running multiple service instances
         RLock lock = redisson.getLock("scheduledTask-spOrder-checkAndSendMessage");
         if (!lock.tryLock()) {return;}
         try {
@@ -35,7 +35,7 @@ public class Scheduler {
         }
     }
 
-    @Scheduled(fixedRate = 300000)
+    @Scheduled(fixedRate = 1800000)
     public void checkExpiredOrders() {
         RLock lock = redisson.getLock("scheduledTask-spOrder-checkExpiredOrders");
         if (!lock.tryLock()) {return;}

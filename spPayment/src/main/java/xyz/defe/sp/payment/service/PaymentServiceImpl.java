@@ -69,7 +69,12 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     @Transactional
     public PaymentLog pay(String orderId) {
-        SpOrder order = orderService.getToPayOrder(orderId);
+        SpOrder order = null;
+        try {
+            order = orderService.getToPayOrder(orderId).get();
+        } catch (Exception e) {
+            ExceptionUtil.warn(e.getMessage());
+        }
         if (order == null) {ExceptionUtil.warn("the order is not able to pay,id=" + orderId);}
 
         //when the order is valid and paymentState=1 then process
@@ -118,7 +123,6 @@ public class PaymentServiceImpl implements PaymentService {
         log.info("pay successful,order id={}", order.getId());
         //send message
         mqMessageService.send(message.getId(), message);
-        log.info("send message to ORDER SERVICE - to set order paid");
 
         return record;
     }

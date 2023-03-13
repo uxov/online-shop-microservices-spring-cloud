@@ -30,7 +30,7 @@ public class MqMessageHandler {
     private final int retryTimes = 3;
 
     //listen messages from PAYMENT SERVICE
-    @RabbitListener(queuesToDeclare = @Queue(Const.QUEUE_SET_ORDER_PAID))
+    @RabbitListener(queuesToDeclare = @Queue(Const.QUEUE_SET_ORDER_PAID), concurrency = "5-10")
     public void setOrderPaidHandle(OrderMsg message, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException {
         log.info("got message(set order paid) from PAYMENT SERVICE,OrderMsg id={}", message.getId());
         try {

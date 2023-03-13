@@ -2,7 +2,16 @@ server:
   port: 8888
 
 spring:
+  redis:
+    host: localhost
+    port: 6379
+    password: 123456
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
 
-
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 60000
+        readTimeout: 600000

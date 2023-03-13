@@ -22,9 +22,11 @@ public class LocalMessage {
     private Integer retry = 0;
 
     @CreationTimestamp
+    @Column(nullable = false)
     private Date createdTime;
 
     @UpdateTimestamp
+    @Column(nullable = false)
     private Date updatedTime;
 
     public String getId() {

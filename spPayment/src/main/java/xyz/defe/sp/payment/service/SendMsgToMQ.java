@@ -27,12 +27,12 @@ public class SendMsgToMQ {
             try {
                 msgJson = m.getMsgJson();
                 OrderMsg msg = gson.fromJson(msgJson, OrderMsg.class);
+                localMessageService.setRetry(m.getId(), 0); //before send()
                 mqMessageService.send(m.getId(), msg);
             } catch (Exception e) {
                 log.error("send message failed,OrderMsg id={}", m.getId());
                 e.printStackTrace();
             }
-            localMessageService.setRetry(m.getId(), 0);
         }
     }
 }

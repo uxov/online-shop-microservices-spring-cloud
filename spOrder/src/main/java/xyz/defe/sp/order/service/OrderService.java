@@ -40,5 +40,5 @@ public interface OrderService {
 
     void processExpiredOrders();
 
-    void sendOrderMsg(OrderMsg msg, int retry);
+    void sendOrderMsg(OrderMsg msg);
 }

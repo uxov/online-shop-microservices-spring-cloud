@@ -2,6 +2,9 @@ server:
   port: 9300
   servlet:
     context-path: /orderService
+  tomcat:
+    threads:
+      max: 500
 spring:
   application:
     name: sp-order-service
@@ -13,6 +16,9 @@ spring:
     url: jdbc:postgresql://localhost/sp-order
     username: postgres
     password: 123456
+    hikari:
+      maximum-pool-size: 30
+      connectionTimeout: 60000
   redis:
     host: localhost
     port: 6379
@@ -25,8 +31,8 @@ spring:
 
     #deprecated,use 'publisher-confirm-type'
 #    publisher-comfirms: true
-    publisher-confirm-type: correlated
-    publisher-returns: true
+#    publisher-confirm-type: correlated
+#    publisher-returns: true
     listener:
       simple:
         acknowledge-mode: manual

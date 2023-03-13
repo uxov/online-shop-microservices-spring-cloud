@@ -23,6 +23,5 @@ public class CheckResponseData {
         if (!Strings.isNullOrEmpty(responseData.getMessage())) {
             System.out.println(responseData.getServiceName() + " - " + responseData.getStatus() +  " - INFO: " + responseData.getMessage());
         }
-        System.out.println("CheckResponseData...."+joinPoint.getSignature().getName());
     }
 }

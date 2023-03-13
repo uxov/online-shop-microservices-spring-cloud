@@ -13,7 +13,7 @@ import java.util.List;
 @Repository
 public interface LocalMessageDao extends JpaRepository<LocalMessage, String> {
 
-    @Query("select m from LocalMessage m where m.msgType='OrderMsg' and m.sendState=1 and m.retry=1")
+    @Query("select m from LocalMessage m where m.msgType='OrderMsg' and m.sendState=1 and m.retry>0 and m.retry<4")
     List<LocalMessage> getRetryOrderMsgs();
 
     @Modifying

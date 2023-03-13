@@ -1,5 +1,8 @@
 server:
   port: 8000
+  tomcat:
+    threads:
+      max: 1000
 spring:
   application:
     name: sp-web-site

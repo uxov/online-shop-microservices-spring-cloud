@@ -45,9 +45,10 @@ public class DeductQuantityService {
         RLock lock = redisson.getLock(Const.LK_ORDER_DEDUCT_QUANTITY_PRE + orderId);
         if (!lock.tryLock()) {ExceptionUtil.warn("tryLock() failed in checkAndDeduct()");}
         try {
-            DeductQuantityLog log = deductQuantityLogDao.findByOrderId(orderId);
-            if (log != null) {
-                ExceptionUtil.warn("Duplicate submission: the order has been processed(deduct product quantity),order id=" + orderId);
+            DeductQuantityLog dqlog = deductQuantityLogDao.findByOrderId(orderId);
+            if (dqlog != null) {
+                log.info("Duplicate submission: the order has been processed(deduct product quantity),order id={}", orderId);
+                return;
             }
             deductQuantity(orderId, counterMap);
         } finally {

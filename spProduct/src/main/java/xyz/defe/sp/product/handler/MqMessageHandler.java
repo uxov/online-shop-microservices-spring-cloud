@@ -27,7 +27,7 @@ public class MqMessageHandler {
     //RabbitMQ RPC - Request/Reply Pattern
     //process product quantity deduction request from ORDER SERVICE
     @SendTo(Const.QUEUE_DEDUCT_QUANTITY_REPLY)
-    @RabbitListener(queuesToDeclare = @Queue(Const.QUEUE_DEDUCT_QUANTITY_REQUEST))  //it will create queue if not exists
+    @RabbitListener(queuesToDeclare = @Queue(Const.QUEUE_DEDUCT_QUANTITY_REQUEST), concurrency = "5-20")  //it will create queue if not exists
     public DeductionResult deductQuantityHandle(OrderMsg msg, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException {
         log.info("got message(deduct product quantity) from ORDER SERVICE,OrderMsg id={}", msg.getId());
 

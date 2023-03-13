@@ -87,11 +87,11 @@ public class OrderServiceImpl implements OrderService {
         message.setFrom(Const.ORDER_SERVER);
         message.setTo(Const.PRODUCT_SERVER);
         //save message to local table
-        localMessageService.saveOrderMessage(message, 1);
+        localMessageService.saveOrderMessage(message, 1, 1);
         log.info("save OrderMsg,id={}", message.getId());
 
         //send message
-        sendOrderMsg(message, 1);
+        sendOrderMsg(message);
 
         return order;
     }
@@ -132,74 +132,14 @@ public class OrderServiceImpl implements OrderService {
         orderDao.setOrderPaymentState(id, state);
     }
 
-    /**
-     * maybe the order is processing(deduct quantity) then retry
-     * if deduct quantity successful, paymentState=1
-     * order's paymentState:{0:init state, 1:to pay, 2:paid}
-     * @param id
-     * @return
-     */
+    @Override
     public SpOrder getToPayOrder(String id) {
-        int index = 0;
-        int paymentState = 1;
-        int[] millsArr = new int[]{1000, 3000, 5000, 7000, 9000};
-
-        SpOrder order = orderDao.findById(id).get();
-        if (order == null) {
-            ExceptionUtil.warn("The order does not exist! id=" + id);
-        } else if (!order.isValid()){
-            ExceptionUtil.warn("order is invalid: " + order.getInvalidReason());
-        } else if (order.getPaymentState() == paymentState) {
-            return order;
-        }
-        while (index < millsArr.length) {
-            try {
-                Thread.sleep(millsArr[index]);
-            } catch (InterruptedException e) {
-                log.warn(e.getMessage());
-                e.printStackTrace();
-            }
-            order = orderDao.getToPayOrder(id);
-            if (order != null) {
-                log.info("got the order");
-                return order;
-            }
-            log.info("getting the order... sec=" + millsArr[index]);
-            index++;
-        }
-        ExceptionUtil.warn("can not get the order in getToPayOrder(),services are busy,try it later");
-        return null;
+        return orderDao.getToPayOrder(id);
     }
 
-    /**
-     * maybe the order is processing then retry
-     * order's paymentState:{0:init state, 1:to pay, 2:paid}
-     * @param id
-     * @return
-     */
+    @Override
     public SpOrder getPaidOrder(String id) {
-        int index = 0;
-        int paymentState = 2;
-        int[] millsArr = new int[]{1000, 3000, 5000, 7000, 9000};
-
-        SpOrder order = orderDao.findByIdAndPaymentState(id, paymentState);
-        while (index < millsArr.length) {
-            if (order != null && order.isValid() && order.getPaymentState() == paymentState) {
-                log.info("got the paid order");
-                return order;
-            }
-            log.info("getting the paid order...");
-            try {
-                Thread.sleep(millsArr[index]);
-            } catch (InterruptedException e) {
-                log.warn(e.getMessage());
-                e.printStackTrace();
-            }
-            order = orderDao.findByIdAndPaymentState(id, paymentState);
-            index++;
-        }
-        log.warn("get the paid order failed,services are busy,try it later");
-        return null;
+        return orderDao.getPaidOrder(id);
     }
 
     public void saveAll(Iterable<SpOrder> entities) {
@@ -212,11 +152,10 @@ public class OrderServiceImpl implements OrderService {
      * if successful then set orders invalid
      */
     public void processExpiredOrders() {
-        Long current = new Date().getTime();
         Map<String, Map<String, Integer>> restoreMap = new HashMap<>();
         List<SpOrder> orders = getUnpaidOrders();
         for (SpOrder order : orders) {
-            if (current - order.getCreatedTime().getTime() > Const.EXPIRED_TIME_ORDER_MILLIS) {
+            if (System.currentTimeMillis() - order.getCreatedTime().getTime() > Const.EXPIRED_TIME_ORDER_MILLIS) {
                 Map<String, Integer> counterMap = ((Cart)gson.fromJson(order.getCartJson(),
                         new TypeToken<Cart>(){}.getType())).getCounterMap();
                 restoreMap.put(order.getId(), counterMap);
@@ -231,11 +170,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     //OrderMsg has the same id as LocalMessage
-    public void sendOrderMsg(OrderMsg msg, int retry) {
+    public void sendOrderMsg(OrderMsg msg) {
         //RabbitMQ RPC - Request/Reply Pattern
         //send product quantity deduction request to PRODUCT SERVICE
-        asyncRabbitTemplate
-                .convertSendAndReceive(Const.EXCHANGE_ORDER, Const.ROUTING_KEY_DEDUCT_QUANTITY_REQUEST, msg)
+        asyncRabbitTemplate.convertSendAndReceive(Const.EXCHANGE_ORDER, Const.ROUTING_KEY_DEDUCT_QUANTITY_REQUEST, msg)
                 .addCallback(new ListenableFutureCallback<Object>() {
                     @Override
                     public void onSuccess(Object result) {
@@ -250,11 +188,11 @@ public class OrderServiceImpl implements OrderService {
                             orderDao.setOrderInvalid(msg.getOrderId(), deductionResult.getMessage());
                             log.info("deduct quantity failed,set order invalid,order id={}", msg.getOrderId());
                         }
+                        localMessageService.setRetry(msg.getId(), 0);
                     }
 
                     @Override
                     public void onFailure(Throwable ex) {
-                        localMessageService.setRetry(msg.getId(), retry);
                         log.error("send message to MQ failed,OrderMsg id={},{}", msg.getId(), ex.getMessage());
                         ex.printStackTrace();
                     }

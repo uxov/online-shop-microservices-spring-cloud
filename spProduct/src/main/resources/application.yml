@@ -2,6 +2,9 @@ server:
   port: 9100
   servlet:
     context-path: /productService
+  tomcat:
+    threads:
+      max: 500
 spring:
   application:
     name: sp-product-service
@@ -13,6 +16,9 @@ spring:
     url: jdbc:postgresql://localhost/sp-product
     username: postgres
     password: 123456
+    hikari:
+      maximum-pool-size: 30
+      connectionTimeout: 60000
   redis:
     host: localhost
     port: 6379
@@ -22,8 +28,8 @@ spring:
     port: 5672
     username: admin
     password: 123456
-    publisher-confirm-type: correlated
-    publisher-returns: true
+#    publisher-confirm-type: correlated
+#    publisher-returns: true
     listener:
       simple:
         acknowledge-mode: manual

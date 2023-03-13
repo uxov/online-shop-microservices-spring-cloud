@@ -8,6 +8,8 @@ import xyz.defe.sp.common.pojo.ResponseData;
 import xyz.defe.sp.common.response.ResponseDataResult;
 import xyz.defe.sp.web.service.OrderService;
 
+import java.util.concurrent.ExecutionException;
+
 @RestController
 @ResponseDataResult
 @RequestMapping("order")
@@ -31,7 +33,7 @@ public class OrderController {
     }
 
     @GetMapping("paid/{id}")
-    public ResponseData<SpOrder> getPaidOrder(@PathVariable String id) {
-        return orderService.getPaidOrder(id);
+    public ResponseData<SpOrder> getPaidOrder(@PathVariable String id) throws ExecutionException, InterruptedException {
+        return orderService.getPaidOrder(id).get();
     }
 }

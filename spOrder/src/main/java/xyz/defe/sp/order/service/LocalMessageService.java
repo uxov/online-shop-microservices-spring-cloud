@@ -33,6 +33,16 @@ public class LocalMessageService {
         localMessageDao.save(localMessage);
     }
 
+    public void saveOrderMessage(OrderMsg message, int sendState, int retry) {
+        LocalMessage localMessage = new LocalMessage();
+        localMessage.setId(message.getId());
+        localMessage.setMsgType("OrderMsg");
+        localMessage.setMsgJson(gson.toJson(message));
+        localMessage.setSendState(sendState);
+        localMessage.setRetry(retry);
+        localMessageDao.save(localMessage);
+    }
+
     public void setSendState(Integer sendState, String messageId) {
         localMessageDao.setSendState(sendState, messageId);
     }

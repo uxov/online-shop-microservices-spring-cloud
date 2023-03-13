@@ -5,8 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import xyz.defe.sp.common.entity.spOrder.SpOrder;
-import xyz.defe.sp.common.exception.ExceptionUtil;
-import xyz.defe.sp.common.pojo.ResponseData;
+
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class OrderService {
@@ -18,12 +18,21 @@ public class OrderService {
         return orderFeignClient.getOrder(id).getData();
     }
 
-    public SpOrder getToPayOrder(String orderId) {
-        ResponseData<SpOrder> responseData = orderFeignClient.getToPayOrder(orderId);
-        SpOrder order = responseData.getData();
+    public CompletableFuture<SpOrder> getToPayOrder(String orderId) {
+        SpOrder order = orderFeignClient.getToPayOrder(orderId).getData();
         if (order == null) {
-            ExceptionUtil.warn(responseData.messageOrError());
+            int n = 0;
+            while (order == null && n < 5) {
+                try {
+                    Thread.sleep(2000);
+                    log.info("getToPayOrder .... n={}", n);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                order = orderFeignClient.getToPayOrder(orderId).getData();
+                n++;
+            }
         }
-        return order;
+        return CompletableFuture.completedFuture(order);
     }
 }

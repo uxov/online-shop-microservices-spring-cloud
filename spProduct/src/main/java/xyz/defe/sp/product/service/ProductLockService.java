@@ -24,18 +24,12 @@ public class ProductLockService {
      * @return
      */
     RedissonMultiLock getProductMultiLock(Set<String> productIdSet) {
-        RLock productGlobalLock = redisson.getLock(Const.LOCK_KEY_PRODUCT_GLOBAL);
-        productGlobalLock.lock();
-        try {
-            List<RLock> locks = new ArrayList<>();
-            productIdSet.forEach(productId -> {
-                RLock lock = redisson.getLock(Const.LOCK_KEY_PRODUCT_PREFIX + productId);
-                locks.add(lock);
-            });
-            RedissonMultiLock mlock = new RedissonMultiLock(locks.toArray(new RLock[locks.size()]));
-            return mlock;
-        } finally {
-            productGlobalLock.unlock();
-        }
+        List<RLock> locks = new ArrayList<>();
+        productIdSet.forEach(productId -> {
+            RLock lock = redisson.getLock(Const.LOCK_KEY_PRODUCT_PREFIX + productId);
+            locks.add(lock);
+        });
+        RedissonMultiLock mlock = new RedissonMultiLock(locks.toArray(new RLock[locks.size()]));
+        return mlock;
     }
 }

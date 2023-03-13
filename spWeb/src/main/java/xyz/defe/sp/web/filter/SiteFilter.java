@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import xyz.defe.sp.common.Cache;
-import xyz.defe.sp.common.exception.ErrorController;
 import xyz.defe.sp.common.exception.ExceptionUtil;
 import xyz.defe.sp.web.Constant;
 
@@ -29,7 +28,7 @@ public class SiteFilter implements Filter {
 
     }
 
-    // catch exceptions by xyz.defe.sp.common.exception.ErrorController
+    // catch exceptions by xyz.defe.sp.common.exception.FilterExceptionHandler
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) req;

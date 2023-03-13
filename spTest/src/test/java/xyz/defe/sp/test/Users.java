@@ -3,7 +3,7 @@ package xyz.defe.sp.test;
 public enum Users {
     ALEN("Alen", "alen", "female", 23, "123"),
     MIKE("Mike", "mike", "male", 22, "123"),
-    JHON("John", "john", "male", 23, "123");
+    JOHN("John", "john", "male", 23, "123");
 
     public String name;
     public String uname;

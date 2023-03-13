@@ -28,6 +28,9 @@ public interface OrderDao extends JpaRepository<SpOrder, String> {
 
     SpOrder findByIdAndPaymentState(String id, int paymentState);
 
+    @Query("select o from SpOrder o where id=?1 and o.valid=true and o.paymentState=2")
+    SpOrder getPaidOrder(String id);
+
     @Modifying
     @Transactional
     @Query("update SpOrder o set o.valid=?2 where id=?1 ")

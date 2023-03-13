@@ -1,5 +1,7 @@
 plugins {
 	id 'java'
+	id 'org.springframework.boot' version '2.7.3'
+	id 'io.spring.dependency-management' version '1.0.13.RELEASE'
 	id "com.github.johnrengelman.shadow" version "7.1.2"
 }
 
@@ -14,10 +16,9 @@ repositories {
 dependencies {
 	implementation 'com.auth0:java-jwt:4.0.0'
 	implementation 'com.google.code.gson:gson:+'
-	implementation 'javax.servlet:javax.servlet-api:4.0.1'
-	implementation 'org.springframework:spring-webmvc:5.3.22'
-	implementation 'org.springframework.data:spring-data-redis:2.7.2'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.7.3'
+	implementation 'org.springframework.data:spring-data-redis'
+	compileOnly 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:4.0.1'
 }
 
@@ -29,5 +30,6 @@ shadowJar {
 }
 
 jar.enabled = false
+bootJar.enabled = false
 
 build.finalizedBy(shadowJar)

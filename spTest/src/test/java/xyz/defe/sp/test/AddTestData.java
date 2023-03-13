@@ -38,7 +38,7 @@ public class AddTestData {
         }
 
         for (Users user : Users.values()) {
-            Account account = spUserRequest.verify(Users.MIKE.uname, Users.MIKE.pwd).getData();
+            Account account = spUserRequest.verify(user.uname, user.pwd).getData();
             if (account == null) {
                 createAccount(user);
             }
