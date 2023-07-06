@@ -10,7 +10,6 @@ import xyz.defe.sp.common.entity.spProduct.Product;
 import xyz.defe.sp.common.pojo.PageQuery;
 import xyz.defe.sp.product.dao.ProductDao;
 
-import javax.transaction.Transactional;
 import java.util.*;
 
 @Service
@@ -18,7 +17,7 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private ProductDao productDao;
     @Autowired
-    private RestoreQuantityService restoreQuantityService;
+    private QuantityService quantityService;
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Override
@@ -61,13 +60,12 @@ public class ProductServiceImpl implements ProductService {
      * @return
      */
     @Override
-    @Transactional
     public Set<String> restoreProductQuantity(Map<String, Map<String, Integer>> restoreMap) {
         Set<String> successfulOrderIdSet = new HashSet<>();
         if (restoreMap != null && !restoreMap.isEmpty()) {
             restoreMap.entrySet().forEach(entity -> {
                 try {
-                    restoreQuantityService.checkAndRestore(entity.getKey(), entity.getValue());
+                    quantityService.checkAndRestore(entity.getKey(), entity.getValue());
                     successfulOrderIdSet.add(entity.getKey());
                 } catch (Exception e) {
                     log.error(e.getMessage());

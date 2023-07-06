@@ -13,14 +13,14 @@ import org.springframework.stereotype.Service;
 import xyz.defe.sp.common.Const;
 import xyz.defe.sp.common.pojo.DeductionResult;
 import xyz.defe.sp.common.pojo.OrderMsg;
-import xyz.defe.sp.product.service.DeductQuantityService;
+import xyz.defe.sp.product.service.QuantityService;
 
 import java.io.IOException;
 
 @Service
 public class MqMessageHandler {
     @Autowired
-    private DeductQuantityService deductQuantityService;
+    private QuantityService quantityService;
     final Logger log = LoggerFactory.getLogger(this.getClass());
 
     //listen messages from ORDER SERVICE
@@ -37,7 +37,7 @@ public class MqMessageHandler {
         //if not add catch block,when exception throw out,exception info will keep print
         //because the message is not be consumed and MQ server will keep resend message
         try {
-            deductQuantityService.checkAndDeduct(msg.getOrderId(), msg.getCounterMap());
+            quantityService.checkAndDeduct(msg.getOrderId(), msg.getCounterMap());
             channel.basicAck(tag, false);
             result.setSuccessful(true);
         } catch (Exception e) {

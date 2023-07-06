@@ -72,6 +72,8 @@ Eureka > http://localhost:8761
 
 Zipkin > http://localhost:9411  
 
+RabbitMQ > http://localhost:15672  
+
 Spring Boot Admin > http://localhost:11000
 
 ### Test

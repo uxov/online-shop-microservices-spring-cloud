@@ -9,7 +9,6 @@ import xyz.defe.sp.common.entity.general.LocalMessage;
 import xyz.defe.sp.common.pojo.OrderMsg;
 import xyz.defe.sp.order.dao.LocalMessageDao;
 
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -47,7 +46,7 @@ public class LocalMessageService {
         localMessageDao.setSendState(sendState, messageId);
     }
 
-    public void setRetry(String messageId, Integer times) {
-        localMessageDao.setRetry(times, messageId);
+    public void setRetry(String messageId, Integer retry) {
+        localMessageDao.setRetry(retry, messageId);
     }
 }

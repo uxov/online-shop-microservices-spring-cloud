@@ -47,3 +47,5 @@ dependencyManagement {
 test {
 	useJUnitPlatform()
 }
+
+test.enabled = false

@@ -1,7 +1,7 @@
 package xyz.defe.sp.test.feignClient.spWeb;
 
 import org.assertj.core.util.Strings;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.RepeatedTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import xyz.defe.sp.common.entity.spOrder.SpOrder;
@@ -22,7 +22,7 @@ public class SpWebTest {
     @Autowired
     private SpWeb spWeb;
 
-    @Test
+    @RepeatedTest(3)
     public void request() {
         //1. get products
         List<Product> products = spWeb.getProducts(1, 10).getData();

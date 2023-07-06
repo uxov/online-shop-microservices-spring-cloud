@@ -17,7 +17,7 @@ public class Scheduler {
     public RedissonClient redisson;
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    @Scheduled(fixedRate = 3000)
+    @Scheduled(fixedDelay = 15000)
     public void checkAndSendMessage() {
         RLock lock = redisson.getLock("scheduledTask-spPayment-checkAndSendMessage");
         if (!lock.tryLock()) {return;}

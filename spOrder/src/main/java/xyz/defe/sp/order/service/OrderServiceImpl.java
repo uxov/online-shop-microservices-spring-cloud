@@ -87,11 +87,11 @@ public class OrderServiceImpl implements OrderService {
         message.setFrom(Const.ORDER_SERVER);
         message.setTo(Const.PRODUCT_SERVER);
         //save message to local table
-        localMessageService.saveOrderMessage(message, 1, 1);
+        localMessageService.saveOrderMessage(message, 1);
         log.info("save OrderMsg,id={}", message.getId());
 
         //send message
-        sendOrderMsg(message);
+        sendOrderMsg(message, false);
 
         return order;
     }
@@ -170,7 +170,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     //OrderMsg has the same id as LocalMessage
-    public void sendOrderMsg(OrderMsg msg) {
+    public void sendOrderMsg(OrderMsg msg, boolean isReSend) {
         //RabbitMQ RPC - Request/Reply Pattern
         //send product quantity deduction request to PRODUCT SERVICE
         asyncRabbitTemplate.convertSendAndReceive(Const.EXCHANGE_ORDER, Const.ROUTING_KEY_DEDUCT_QUANTITY_REQUEST, msg)
@@ -188,11 +188,18 @@ public class OrderServiceImpl implements OrderService {
                             orderDao.setOrderInvalid(msg.getOrderId(), deductionResult.getMessage());
                             log.info("deduct quantity failed,set order invalid,order id={}", msg.getOrderId());
                         }
-                        localMessageService.setRetry(msg.getId(), 0);
+                        if (isReSend) {
+                            localMessageService.setRetry(msg.getId(), 0);
+                        }
                     }
 
                     @Override
                     public void onFailure(Throwable ex) {
+                        if (isReSend) {
+                            localMessageService.setRetry(msg.getId(), 0);
+                        } else {
+                            localMessageService.setRetry(msg.getId(), 1);
+                        }
                         log.error("send message to MQ failed,OrderMsg id={},{}", msg.getId(), ex.getMessage());
                         ex.printStackTrace();
                     }

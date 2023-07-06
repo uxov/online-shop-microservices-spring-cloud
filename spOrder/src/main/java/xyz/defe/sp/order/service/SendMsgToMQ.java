@@ -27,12 +27,10 @@ public class SendMsgToMQ {
         List<LocalMessage> list = localMessageService.getRetryOrderMsgs();
         String msgJson = "";
         for (LocalMessage m : list) {
-            if (System.currentTimeMillis() - m.getUpdatedTime().getTime() < 15000) {continue;}
             try {
                 msgJson = m.getMsgJson();
                 OrderMsg msg = gson.fromJson(msgJson, OrderMsg.class);
-                localMessageService.setRetry(m.getId(), m.getRetry() + 1);
-                orderService.sendOrderMsg(msg); // use asyncRabbitTemplate, so it must be after setRetry()
+                orderService.sendOrderMsg(msg, true);
             } catch (Exception e) {
                 localMessageService.setRetry(m.getId(), 0);
                 log.error("send message failed,OrderMsg id={}", m.getId());

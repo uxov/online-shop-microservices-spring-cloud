@@ -40,5 +40,5 @@ public interface OrderService {
 
     void processExpiredOrders();
 
-    void sendOrderMsg(OrderMsg msg);
+    void sendOrderMsg(OrderMsg msg, boolean isResend);
 }

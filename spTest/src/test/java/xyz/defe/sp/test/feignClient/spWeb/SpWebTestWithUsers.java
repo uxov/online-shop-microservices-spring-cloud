@@ -1,6 +1,7 @@
 package xyz.defe.sp.test.feignClient.spWeb;
 
 import org.assertj.core.util.Strings;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,6 +19,7 @@ import xyz.defe.sp.test.restTemplate.services.spPayment.PaymentRequest;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -33,7 +35,7 @@ public class SpWebTestWithUsers {
     @Autowired
     private PaymentRequest paymentRequest;
 
-    private final int count = 8000;
+    private final int count = 10000;
     private volatile boolean flag = true;
     private AtomicInteger taskCount = new AtomicInteger();
     private AtomicInteger getProductsSucCount = new AtomicInteger();
@@ -43,25 +45,27 @@ public class SpWebTestWithUsers {
     private AtomicInteger paySucCount = new AtomicInteger();
     private AtomicInteger getPaidOrderSucCount = new AtomicInteger();
 
-    @Test
+    @RepeatedTest(50)
     public void run() throws InterruptedException {
         List<Account> accounts = getAccounts(count);
-
+        ExecutorService executor = Executors.newFixedThreadPool(count);
         long start = System.currentTimeMillis();
 
         for (Account account : accounts) {
-            CompletableFuture.runAsync(() -> request(account),
-                    Executors.newFixedThreadPool(count)).whenComplete((result, ex) -> {
+            CompletableFuture.runAsync(() -> request(account), executor)
+                    .whenComplete((result, ex) -> {
                         if (taskCount.incrementAndGet() == count) {
                             flag = false;
                             System.out.println();
                             System.out.println("All tasks are completed !!!");
                             summary(start);
+                            executor.shutdown();
                         }
             }).exceptionally(ex -> {
                 ex.printStackTrace();
                 return null;
             });
+            Thread.sleep(50);   //control request rate
         }
 
         while (flag) {

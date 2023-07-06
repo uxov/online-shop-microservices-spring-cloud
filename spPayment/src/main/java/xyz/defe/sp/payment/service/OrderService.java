@@ -22,9 +22,9 @@ public class OrderService {
         SpOrder order = orderFeignClient.getToPayOrder(orderId).getData();
         if (order == null) {
             int n = 0;
-            while (order == null && n < 5) {
+            while (order == null && n < 10) {
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(20);
                     log.info("getToPayOrder .... n={}", n);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);

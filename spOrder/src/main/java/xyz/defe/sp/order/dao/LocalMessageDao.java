@@ -7,13 +7,12 @@ import org.springframework.stereotype.Repository;
 import xyz.defe.sp.common.entity.general.LocalMessage;
 
 import javax.transaction.Transactional;
-import java.util.Date;
-import java.util.List;
+ import java.util.List;
 
 @Repository
 public interface LocalMessageDao extends JpaRepository<LocalMessage, String> {
 
-    @Query("select m from LocalMessage m where m.msgType='OrderMsg' and m.sendState=1 and m.retry>0 and m.retry<4")
+    @Query("select m from LocalMessage m where m.msgType='OrderMsg' and m.sendState=1 and m.retry=1")
     List<LocalMessage> getRetryOrderMsgs();
 
     @Modifying

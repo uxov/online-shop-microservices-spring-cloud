@@ -50,6 +50,11 @@ spring:
     date-format: yyyy-MM-dd HH:mm:ss
   output.ansi.enabled: always
 
+logging:
+  file:
+#    max-size: 100MB
+    total-size-cap: 100MB
+
 eureka:
   client:
     serviceUrl:
