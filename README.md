@@ -4,12 +4,14 @@
 - Spring Cloud Gateway
 - Spring Cloud OpenFeign
 - Spring Cloud Circuit Breaker - Resilience4J
-- Spring Cloud Sleuth + Zipkin  
+- ~~Spring Cloud Sleuth + Zipkin~~  
+- Micrometer Tracing + Zipkin  
 - Redis
 - RedissonLock  
 - RabbitMQ
 - RabbitMQ RPC - Request / Reply Pattern
 - JWT
+- Spring Boot 3
 - Spring Boot Admin
 
 ## Overview
@@ -28,7 +30,7 @@
 
 ### Requirements
 
-- JDK 19
+- JDK 20
 - Gradle 8
 - Database
 - RabbitMQ

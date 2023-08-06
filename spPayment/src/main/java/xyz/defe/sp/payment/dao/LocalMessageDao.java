@@ -6,8 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import xyz.defe.sp.common.entity.general.LocalMessage;
 
-import javax.transaction.Transactional;
-import java.util.Date;
+import jakarta.transaction.Transactional;
 import java.util.List;
 
 @Repository

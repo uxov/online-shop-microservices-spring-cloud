@@ -30,7 +30,7 @@ public class PaymentTest {
     private PaymentRequest paymentRequest;
 
     @Test
-    public void pay() {
+    public void pay() throws InterruptedException {
         Account user = spUserRequest.verify(Users.MIKE.uname, Users.MIKE.pwd).getData();
         assertEquals(Users.MIKE.uname, user.getUname());
 
@@ -47,6 +47,8 @@ public class PaymentTest {
         cart.getCounterMap().put(products.get(1).getId(), 2);
         SpOrder order = orderRequest.submitOrder(cart).getData();
         assertTrue(!Strings.isNullOrEmpty(order.getId()));
+
+        Thread.sleep(10);
 
         SpOrder toPayOrder = orderRequest.getToPayOrder(order.getId()).getData();
         assertTrue(toPayOrder.isValid());

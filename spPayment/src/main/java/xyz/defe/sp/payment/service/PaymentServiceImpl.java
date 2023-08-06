@@ -20,7 +20,7 @@ import xyz.defe.sp.common.util.CheckParam;
 import xyz.defe.sp.payment.dao.PaymentLogDao;
 import xyz.defe.sp.payment.dao.WalletDao;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.Set;
 

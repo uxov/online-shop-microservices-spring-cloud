@@ -20,6 +20,7 @@ public class RabbitTemplateConfig {
         CachingConnectionFactory cachingConnectionFactory = (CachingConnectionFactory) connectionFactory;
         cachingConnectionFactory.getRabbitConnectionFactory().setRequestedChannelMax(4096); //same config as RabbitMQ Server
         final RabbitTemplate rabbitTemplate = new RabbitTemplate(cachingConnectionFactory);
+        rabbitTemplate.setObservationEnabled(true); //to be enabled to send spans to zipkin
         return rabbitTemplate;
     }
 }

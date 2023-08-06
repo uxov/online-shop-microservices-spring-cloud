@@ -4,9 +4,6 @@ server:
 spring:
   application:
     name: sp-gateway
-  sleuth:
-    sampler:
-      probability: 1.0
   zipkin:
     enabled: true
     base-url: http://localhost:9411/

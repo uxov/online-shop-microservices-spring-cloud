@@ -2,6 +2,7 @@ package xyz.defe.sp.order.service;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
+import jakarta.transaction.Transactional;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
@@ -9,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.AsyncRabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.concurrent.ListenableFutureCallback;
 import xyz.defe.sp.common.Cache;
 import xyz.defe.sp.common.Const;
 import xyz.defe.sp.common.entity.spOrder.SpOrder;
@@ -22,7 +22,6 @@ import xyz.defe.sp.common.pojo.PageQuery;
 import xyz.defe.sp.common.util.CheckParam;
 import xyz.defe.sp.order.dao.OrderDao;
 
-import javax.transaction.Transactional;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -174,12 +173,12 @@ public class OrderServiceImpl implements OrderService {
         //RabbitMQ RPC - Request/Reply Pattern
         //send product quantity deduction request to PRODUCT SERVICE
         asyncRabbitTemplate.convertSendAndReceive(Const.EXCHANGE_ORDER, Const.ROUTING_KEY_DEDUCT_QUANTITY_REQUEST, msg)
-                .addCallback(new ListenableFutureCallback<Object>() {
-                    @Override
-                    public void onSuccess(Object result) {
-                        DeductionResult deductionResult = (DeductionResult) result;
-                        log.info("got product quantity deduction result from PRODUCT SERVICE,result={},order id={}", deductionResult.isSuccessful(), msg.getOrderId());
+                .whenComplete((result, ex) -> {
+                    DeductionResult deductionResult = (DeductionResult) result;
+                    log.info("got product quantity deduction result from PRODUCT SERVICE,result={},order id={}",
+                            deductionResult.isSuccessful(), msg.getOrderId());
 
+                    if (ex == null) {   //on success
                         if (deductionResult.isSuccessful()) {
                             //set order paymentState=1(to pay)
                             setOrderPaymentState(msg.getOrderId(), 1);
@@ -191,10 +190,7 @@ public class OrderServiceImpl implements OrderService {
                         if (isReSend) {
                             localMessageService.setRetry(msg.getId(), 0);
                         }
-                    }
-
-                    @Override
-                    public void onFailure(Throwable ex) {
+                    } else {    //on failure
                         if (isReSend) {
                             localMessageService.setRetry(msg.getId(), 0);
                         } else {
@@ -203,7 +199,9 @@ public class OrderServiceImpl implements OrderService {
                         log.error("send message to MQ failed,OrderMsg id={},{}", msg.getId(), ex.getMessage());
                         ex.printStackTrace();
                     }
+
                 });
+
         log.info("send product quantity deduction request to PRODUCT SERVICE");
     }
 

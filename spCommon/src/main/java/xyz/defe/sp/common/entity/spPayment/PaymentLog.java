@@ -2,7 +2,7 @@ package xyz.defe.sp.common.entity.spPayment;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;

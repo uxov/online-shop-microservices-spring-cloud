@@ -2,7 +2,7 @@ package xyz.defe.sp.product.entity;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.Date;
 
 @Entity

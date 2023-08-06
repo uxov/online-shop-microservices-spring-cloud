@@ -29,9 +29,6 @@ spring:
     username: admin
     password: 123456
     publisher-confirm-type: correlated
-  sleuth:
-    sampler:
-      probability: 1.0
   zipkin:
     enabled: true
     base-url: http://localhost:9411/

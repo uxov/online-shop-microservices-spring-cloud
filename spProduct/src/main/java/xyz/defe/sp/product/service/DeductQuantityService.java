@@ -11,7 +11,7 @@ import xyz.defe.sp.product.dao.DeductQuantityLogDao;
 import xyz.defe.sp.product.dao.ProductDao;
 import xyz.defe.sp.product.entity.DeductQuantityLog;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

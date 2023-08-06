@@ -1,7 +1,7 @@
 package xyz.defe.sp.common.exception;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.web.bind.annotation.RequestMapping;

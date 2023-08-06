@@ -1,7 +1,7 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '2.7.3'
-	id 'io.spring.dependency-management' version '1.0.13.RELEASE'
+	id 'org.springframework.boot' version '3.1.2'
+	id 'io.spring.dependency-management' version '1.1.2'
 }
 
 group = 'xyz.defe.sp'
@@ -13,19 +13,20 @@ repositories {
 }
 
 ext {
-	set('springCloudVersion', "2021.0.3")
+	set('springCloudVersion', "2022.0.4")
 }
 
 dependencies {
 	implementation fileTree(include: ["spCommon-0.0.1-SNAPSHOT.jar"], dir: "../spCommon/build/libs")
 
-	implementation 'com.google.guava:guava:31.1-jre'
+	implementation 'redis.clients:jedis:4.4.3'
 	implementation 'com.google.code.gson:gson:+'
-	implementation 'redis.clients:jedis:4.3.1'
-	implementation 'org.springframework.data:spring-data-redis:3.0.0'
+	implementation 'com.google.guava:guava:31.1-jre'
+	implementation 'de.codecentric:spring-boot-admin-starter-client:3.1.4'
+
+	implementation 'org.springframework.data:spring-data-redis'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	implementation 'de.codecentric:spring-boot-admin-starter-client:2.7.10'
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {

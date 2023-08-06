@@ -1,19 +1,18 @@
 package xyz.defe.sp.payment.config;
 
 import com.google.common.base.Strings;
+import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.ReturnedMessage;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import xyz.defe.sp.payment.service.LocalMessageService;
 
-import javax.annotation.PostConstruct;
-
 @Component
-public class RabbitTemplateConfig implements RabbitTemplate.ConfirmCallback,RabbitTemplate.ReturnCallback {
+public class RabbitTemplateConfig implements RabbitTemplate.ConfirmCallback,RabbitTemplate.ReturnsCallback {
     @Autowired
     private RabbitTemplate rabbitTemplate;
     private final Logger log = LoggerFactory.getLogger(this.getClass());
@@ -24,6 +23,7 @@ public class RabbitTemplateConfig implements RabbitTemplate.ConfirmCallback,Rabb
     @PostConstruct
     public void init() {
         rabbitTemplate.setConfirmCallback(this);
+        rabbitTemplate.setObservationEnabled(true); //to be enabled to send spans to zipkin
     }
 
     @Override
@@ -40,12 +40,14 @@ public class RabbitTemplateConfig implements RabbitTemplate.ConfirmCallback,Rabb
     }
 
     @Override
-    public void returnedMessage(Message message, int replyCode, String replyText, String exchange, String routingKey) {
-        String correlationId = message.getMessageProperties().getCorrelationId();
+    public void returnedMessage(ReturnedMessage returned) {
+        String correlationId = returned.getMessage().getMessageProperties().getCorrelationId();
         if (!Strings.isNullOrEmpty(correlationId)) {
             localMessageService.setRetry(correlationId, 1);
         }
-        log.error("RabbitMQ ReturnCallback:{},{},{},{},{},{}", message, replyCode, replyText, exchange, routingKey);
+        log.error("RabbitMQ ReturnCallback:{},{},{},{},{},{}",
+                returned.getMessage(), returned.getReplyCode(), returned.getReplyText(),
+                returned.getExchange(), returned.getRoutingKey());
     }
 
 }

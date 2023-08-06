@@ -3,9 +3,9 @@ package xyz.defe.sp.common.entity.spProduct;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
