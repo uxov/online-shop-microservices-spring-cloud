@@ -29,7 +29,7 @@ public class MqMessageHandler {
     @SendTo(Const.QUEUE_DEDUCT_QUANTITY_REPLY)
     @RabbitListener(queuesToDeclare = @Queue(Const.QUEUE_DEDUCT_QUANTITY_REQUEST), concurrency = "5-20")  //it will create queue if not exists
     public DeductionResult deductQuantityHandle(OrderMsg msg, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException {
-        log.info("got message(deduct product quantity) from ORDER SERVICE,OrderMsg id={}", msg.getId());
+        log.debug("got message(deduct product quantity) from ORDER SERVICE,OrderMsg id={}", msg.getId());
 
         DeductionResult result = new DeductionResult(msg.getOrderId(), "");
         if (msg == null) {result.setMessage("OrderMsg is null, msg id="+msg.getId());}
@@ -47,7 +47,7 @@ public class MqMessageHandler {
             log.error("consume message failed,drop message,OrderMsg id={},{}", msg.getId(), e.getMessage());
             e.printStackTrace();
         }
-        log.info("replay to ORDER SERVICE,result={}", result.isSuccessful());
+        log.debug("replay to ORDER SERVICE,result={}", result.isSuccessful());
         return result;
     }
 }

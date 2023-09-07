@@ -20,6 +20,7 @@ public class ProductTest {
         List<Product> list = productRequest.getProducts().getData();
 //        assertTrue(!list.isEmpty());
         assertTrue(!Strings.isNullOrEmpty(list.get(0).getName()));
+        list.forEach(p -> assertTrue(p.getQuantity() > 0));
     }
 
 }

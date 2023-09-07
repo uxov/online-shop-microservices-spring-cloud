@@ -25,7 +25,7 @@ public class RabbitTemplateConfig implements RabbitTemplate.ConfirmCallback,Rabb
     @Override
     public void confirm(CorrelationData correlationData, boolean ack, String cause) {
         if (ack) {
-            log.info("message sent successful,correlation id={}", correlationData.getId());
+            log.debug("message sent successful,correlation id={}", correlationData.getId());
         } else {
             log.error("message sent failed,{},correlation id={}", cause, correlationData.getId());
         }

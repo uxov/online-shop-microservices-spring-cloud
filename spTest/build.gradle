@@ -43,10 +43,11 @@ dependencyManagement {
 test {
 	useJUnitPlatform()
 
-	maxHeapSize = '3G'
+	// maxHeapSize = '1G'
 
 	filter {
 //		includeTestsMatching "xyz.defe.sp.test.TestAllSuit"
+//		includeTestsMatching "xyz.defe.sp.test.feignClient.spWeb.SpWebTestWithUsers"
 	}
 	testLogging {
 		events = ["failed", "passed", "skipped"]

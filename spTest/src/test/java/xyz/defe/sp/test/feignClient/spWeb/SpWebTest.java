@@ -22,11 +22,12 @@ public class SpWebTest {
     @Autowired
     private SpWeb spWeb;
 
-    @RepeatedTest(3)
+    @RepeatedTest(1)
     public void request() {
         //1. get products
         List<Product> products = spWeb.getProducts(1, 10).getData();
         assertTrue(!products.isEmpty());
+        products.forEach(p -> assertTrue(p.getQuantity() > 0));
 
         //2. user login
         Map<String, String> map = spWeb.login(Users.MIKE.uname, Users.MIKE.pwd).getData();

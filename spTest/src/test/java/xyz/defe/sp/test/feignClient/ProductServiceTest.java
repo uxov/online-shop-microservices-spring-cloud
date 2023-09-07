@@ -25,6 +25,7 @@ public class ProductServiceTest {
     void getProducts() {
         List<Product> list = productService.getProducts(1, 10).getData();
         assertTrue(!Strings.isNullOrEmpty(list.get(0).getName()));
+        list.forEach(p -> assertTrue(p.getQuantity() > 0));
 
         int count = 2;
         Set<String> productIdSet = list.stream().limit(count).map(e -> e.getId())

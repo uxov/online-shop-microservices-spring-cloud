@@ -2,6 +2,8 @@ package xyz.defe.sp.gateway.filter;
 
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -31,15 +33,17 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
 
     @Autowired
     private Gson gson;
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
         ServerHttpResponse response = exchange.getResponse();
         String path = request.getPath().toString();
-        System.out.println(request.getMethod().name() + " - " + path);
+        log.debug(request.getMethod().name() + " - {}", path);
         if (!startWithAllowPath(path, allowPath)) {
             String token = request.getHeaders().getFirst("Authorization");
+            log.debug("token = {}", token);
             if (Strings.isNullOrEmpty(token)) {
                 return getVoidMono(response, HttpStatus.UNAUTHORIZED.value(), "Token is null or empty!");
             }

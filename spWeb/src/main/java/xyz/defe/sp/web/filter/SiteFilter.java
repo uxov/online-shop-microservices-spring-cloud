@@ -5,6 +5,8 @@ import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -22,6 +24,7 @@ public class SiteFilter implements Filter {
 
     @Autowired
     private Cache cache;
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -36,7 +39,7 @@ public class SiteFilter implements Filter {
 
         String token = request.getHeader(HttpHeaders.AUTHORIZATION);
         String path = request.getRequestURI().substring(request.getContextPath().length()).replaceAll("[/]+$", "");
-        System.out.println("path="+path);
+        log.debug(path);
         if (!startWithAllowPath(path, allowPath)) {
             if (Strings.isNullOrEmpty(token)) {
                 ExceptionUtil.warn("token is empty!");

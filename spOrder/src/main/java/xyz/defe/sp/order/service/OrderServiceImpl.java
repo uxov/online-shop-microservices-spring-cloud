@@ -175,7 +175,7 @@ public class OrderServiceImpl implements OrderService {
         asyncRabbitTemplate.convertSendAndReceive(Const.EXCHANGE_ORDER, Const.ROUTING_KEY_DEDUCT_QUANTITY_REQUEST, msg)
                 .whenComplete((result, ex) -> {
                     DeductionResult deductionResult = (DeductionResult) result;
-                    log.info("got product quantity deduction result from PRODUCT SERVICE,result={},order id={}",
+                    log.debug("got product quantity deduction result from PRODUCT SERVICE,result={},order id={}",
                             deductionResult.isSuccessful(), msg.getOrderId());
 
                     if (ex == null) {   //on success
@@ -202,7 +202,7 @@ public class OrderServiceImpl implements OrderService {
 
                 });
 
-        log.info("send product quantity deduction request to PRODUCT SERVICE");
+        log.debug("send product quantity deduction request to PRODUCT SERVICE");
     }
 
 }

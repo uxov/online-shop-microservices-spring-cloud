@@ -80,6 +80,9 @@ Spring Boot Admin > http://localhost:11000
 
 ### Test
 
-
+   ```shell
+   cd spTest
+   gradle clean test --tests TestAllSuit
+   ```
 
 See test codes in `spTest/src/test/java/xyz/defe/sp/test/*`

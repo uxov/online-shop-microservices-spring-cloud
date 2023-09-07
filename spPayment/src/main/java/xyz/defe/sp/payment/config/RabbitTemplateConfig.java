@@ -30,7 +30,7 @@ public class RabbitTemplateConfig implements RabbitTemplate.ConfirmCallback,Rabb
     public void confirm(CorrelationData correlationData, boolean ack, String cause) {
         String correlationId = correlationData.getId();
         if (ack) {
-            log.info("message sent successful,correlation id={}", correlationId);
+            log.debug("message sent successful,correlation id={}", correlationId);
         } else {
             if (!Strings.isNullOrEmpty(correlationId)) {
                 localMessageService.setRetry(correlationId, 1);

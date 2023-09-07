@@ -9,7 +9,6 @@ import xyz.defe.sp.common.entity.general.LocalMessage;
 import xyz.defe.sp.common.pojo.OrderMsg;
 import xyz.defe.sp.payment.dao.LocalMessageDao;
 
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -31,7 +30,7 @@ public class LocalMessageService {
         localMessage.setMsgJson(gson.toJson(message));
         localMessage.setSendState(sendState);
         localMessageDao.save(localMessage);
-        log.info("save OrderMsg,id={}", message.getId());
+        log.debug("save OrderMsg,id={}", message.getId());
     }
 
     public void setSendState(Integer sendState, String messageId) {

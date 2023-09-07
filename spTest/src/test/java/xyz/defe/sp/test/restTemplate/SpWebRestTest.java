@@ -31,6 +31,7 @@ public class SpWebRestTest {
         //1. get products
         List<Product> products = spWebRest.getProducts(1, 10).getData();
         assertTrue(!products.isEmpty());
+        products.forEach(p -> assertTrue(p.getQuantity() > 0));
 
         //2. user login
         Map<String, String> map = spWebRest.login(Users.MIKE.uname, Users.MIKE.pwd).getData();

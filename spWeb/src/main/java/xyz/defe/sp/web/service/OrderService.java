@@ -37,7 +37,7 @@ public class OrderService {
             while (order == null && n < 10) {
                 try {
                     Thread.sleep(1000);
-                    log.info("getToPaidOrder .... n={}", n);
+                    log.debug("getToPaidOrder .... n={}", n);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }

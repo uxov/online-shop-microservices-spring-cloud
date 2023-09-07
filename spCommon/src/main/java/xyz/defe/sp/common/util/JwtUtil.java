@@ -26,7 +26,7 @@ public class JwtUtil {
 
     public static void verifyToken(String token, String secretKey) {
         Algorithm algorithm = Algorithm.HMAC256(secretKey);
-        JWTVerifier jwtVerifier = JWT.require(algorithm).withIssuer(ISUSER).build();
+        JWTVerifier jwtVerifier = JWT.require(algorithm).acceptLeeway(2).withIssuer(ISUSER).build();
         jwtVerifier.verify(token);
     }
 

@@ -12,7 +12,6 @@ import xyz.defe.sp.test.restTemplate.services.spProduct.ProductRequest;
 import xyz.defe.sp.test.restTemplate.services.spUser.SpUserRequest;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -47,9 +46,9 @@ public class AddTestData {
 
     void addProducts(){
         List products = List.of(
-                new Product("Computer", new BigDecimal(3500.00), 100, new Date()),
-                new Product("Cell Phone", new BigDecimal(1100.00), 100, new Date()),
-                new Product("Bike", new BigDecimal(500.00), 100, new Date())
+                new Product("Computer", new BigDecimal(3500.00), 100000, new Date()),
+                new Product("Cell Phone", new BigDecimal(1100.00), 100000, new Date()),
+                new Product("Bike", new BigDecimal(500.00), 100000, new Date())
         );
         ResponseData responseData = productRequest.addProducts(products);
         assertEquals(200, responseData.getStatus());
@@ -70,7 +69,7 @@ public class AddTestData {
     void createUserWallet(Account user) {
         Wallet wallet = new Wallet();
         wallet.setUserId(user.getId());
-        wallet.setBalance(new BigDecimal(100000.00));
+        wallet.setBalance(new BigDecimal(1000000.00));
         wallet.setCreatedTime(new Date());
         Wallet wa = paymentRequest.createUserWallet(wallet).getData();
         assertNotNull(wallet.getBalance());
