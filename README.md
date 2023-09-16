@@ -32,41 +32,54 @@
 
 - JDK 20
 - Gradle 8
-- Database
+- PostgreSQL
 - RabbitMQ
 - Redis
 - Zipkin
+- Podman(>=3.4) & podman-compose (or Docker & `docker cmopose`)
 
 ### Preparation
 
-1. Start servers: database, RabbitMQ, Redis, Zipkin
+Start servers: PostgreSQL, RabbitMQ, Redis, Zipkin
 
-2. Create databases, names: sp-product, sp-user, sp-order, sp-payment
+```shell
+cd scripts
+podman-compose up -d
+```
 
-3. Configure connection settings for projects,
-   set databases / RabbitMQ / Redis connection info
+Or use `docker compose`(Compose V2) / `docker-compose`(Compose V1)
 
-4. Build `spCommon`, it will generate `spCommon-0.0.1-SNAPSHOT.jar` in `spCommon/build/libs` directory and as a dependency for projects
-   
-   ```shell
-   cd spCommon
-   gradle build
-   ```
+```shell
+cd scripts
+sudo docker compose up -d
+```
 
 ### Run
 
-1. Start Eureka server: `eurekaServer`
+Start : `eurekaServer`, `gateway`, `authServer`, `sbAdmin`;  services: `spProduct, spUser, spOrder, spPayment` and Web App: `spWeb`
 
-2. Start services: `authServer, spProduct, spUser, spOrder, spPayment`  
+```shell
+cd scripts
+sh run-jars.sh
+```
 
-3. Start gateway: `gateway`
+### Test
 
-4. Start web App: `spWeb`
+Add test data before run test
 
-5. Start Spring Boot Admin: `sbAdmin`
+```shell
+cd spTest
+gradle clean test -i --tests AddTestData
+```
+*check codes  in `spTest/src/test/java/xyz/defe/sp/test/AddTestData.java`*    
 
-6. Add test data by execute
-   `addData()` in `spTest/src/test/java/xyz/defe/sp/test/AddTestData.java`
+Run test classes
+
+```shell
+cd spTest
+gradle clean test --tests TestAllSuit
+```
+*see test classes in `spTest/src/test/java/xyz/defe/sp/test/*`*
 
 ### Web UI
 
@@ -76,13 +89,6 @@ Zipkin > http://localhost:9411
 
 RabbitMQ > http://localhost:15672  
 
-Spring Boot Admin > http://localhost:11000
+Spring Boot Admin > http://localhost:11000/wallboard  
 
-### Test
-
-   ```shell
-   cd spTest
-   gradle clean test --tests TestAllSuit
-   ```
-
-See test codes in `spTest/src/test/java/xyz/defe/sp/test/*`
+![Spring Boot Admin Overview](./images/sbAdmin-overview.png)

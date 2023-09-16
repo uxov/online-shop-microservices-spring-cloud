@@ -16,10 +16,10 @@ import xyz.defe.sp.test.restTemplate.services.spUser.SpUserTest;
 @Suite
 @SelectClasses({
         AddTestData.class,
-        SpUserTest.class, ProductTest.class, OrderTest.class, PaymentTest.class,    //rest
-        UserServiceTest.class, ProductServiceTest.class, OrderServiceTest.class, PaymentServiceTest.class,   //feign
-        SpWebRestTest.class,   //rest
-        SpWebTest.class     //feign
+        SpUserTest.class, ProductTest.class, OrderTest.class, PaymentTest.class,    //RestTemplate
+        UserServiceTest.class, ProductServiceTest.class, OrderServiceTest.class, PaymentServiceTest.class,   //Feign
+        SpWebRestTest.class,   //RestTemplate
+        SpWebTest.class     //Feign
 })
 public class TestAllSuit {
 }

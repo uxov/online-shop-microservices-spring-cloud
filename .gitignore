@@ -193,3 +193,4 @@ gradlew.bat
 .idea/
 nohup.out
 *.drawio
+logs/

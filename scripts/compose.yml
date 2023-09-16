@@ -1,0 +1,50 @@
+version: "3.8"
+name: sp
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres-sp
+    hostname: postgres-sp
+    environment: 
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123456
+      # https://github.com/mrts/docker-postgresql-multiple-databases
+      - POSTGRES_MULTIPLE_DATABASES=sp-product,sp-user,sp-order,sp-payment
+    command: postgres -c 'max_connections=1000'  
+    volumes:
+      - ./postgres-init/:/docker-entrypoint-initdb.d/:Z
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:latest
+    container_name: redis-sp
+    hostname: redis-sp
+    command: >
+          --requirepass 123456
+    ports:
+      - "6379:6379"
+      
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq-sp
+    hostname: rabbitmq-sp
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=123456
+    ports:
+      - "5672:5672"
+      - "15672:15672" 
+      
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin-sp
+    hostname: zipkin-sp
+    environment:
+      - JAVA_OPTS=
+        -Xms1g 
+        -Xmx1g 
+        -XX:+ExitOnOutOfMemoryError
+    ports:
+      - "9411:9411"
