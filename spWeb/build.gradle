@@ -1,7 +1,7 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '3.1.2'
-	id 'io.spring.dependency-management' version '1.1.2'
+	id 'org.springframework.boot' version '3.2.0'
+	id 'io.spring.dependency-management' version '1.1.4'
 }
 
 group = 'xyz.defe.sp'
@@ -13,16 +13,16 @@ repositories {
 }
 
 ext {
-	set('springCloudVersion', "2022.0.4")
+	set('springCloudVersion', "2023.0.0")
 }
 
 dependencies {
 	implementation fileTree(include: ["spCommon-0.0.1-SNAPSHOT.jar"], dir: "../spCommon/build/libs")
 
-	implementation 'redis.clients:jedis:4.4.3'
+	implementation 'redis.clients:jedis:5.1.0'
 	implementation 'com.google.code.gson:gson:+'
-	implementation 'com.google.guava:guava:31.1-jre'
-	implementation 'de.codecentric:spring-boot-admin-starter-client:3.1.4'
+	implementation 'com.google.guava:guava:32.1.3-jre'
+	implementation 'de.codecentric:spring-boot-admin-starter-client:3.1.8'
 
 	implementation 'org.springframework.data:spring-data-redis'
 	implementation 'org.springframework.boot:spring-boot-starter-web'

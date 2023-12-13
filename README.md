@@ -11,7 +11,7 @@
 - RabbitMQ
 - RabbitMQ RPC - Request / Reply Pattern
 - JWT
-- Spring Boot 3
+- Spring Boot 3.2
 - Spring Boot Admin
 
 ## Overview
@@ -30,8 +30,8 @@
 
 ### Requirements
 
-- JDK 20
-- Gradle 8
+- JDK 21
+- Gradle 8.5
 - PostgreSQL
 - RabbitMQ
 - Redis

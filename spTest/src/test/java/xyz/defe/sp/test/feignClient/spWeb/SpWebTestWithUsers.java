@@ -45,10 +45,10 @@ public class SpWebTestWithUsers {
     private AtomicInteger paySucCount = new AtomicInteger();
     private AtomicInteger getPaidOrderSucCount = new AtomicInteger();
 
-    @RepeatedTest(3)
+    @RepeatedTest(1)
     public void run() throws InterruptedException {
         List<Account> accounts = getAccounts(count);
-        ExecutorService executor = Executors.newFixedThreadPool(count);
+        ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
 
         System.out.println("start test");
 

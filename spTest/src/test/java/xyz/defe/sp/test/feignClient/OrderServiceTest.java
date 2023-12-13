@@ -13,7 +13,7 @@ import xyz.defe.sp.test.Users;
 
 import java.util.List;
 
-;import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Component
 @SpringBootTest

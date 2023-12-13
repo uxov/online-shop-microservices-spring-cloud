@@ -1,7 +1,7 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '3.1.2'
-	id 'io.spring.dependency-management' version '1.1.2'
+	id 'org.springframework.boot' version '3.2.0'
+	id 'io.spring.dependency-management' version '1.1.4'
 }
 
 group = 'xyz.defe.sp'
@@ -12,9 +12,9 @@ repositories {
 }
 
 dependencies {
-	implementation 'de.codecentric:spring-boot-admin-starter-server:3.1.4'
+	implementation 'de.codecentric:spring-boot-admin-starter-server:3.1.8'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:4.0.3'
+	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:4.1.0'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
