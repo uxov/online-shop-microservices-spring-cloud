@@ -30,4 +30,4 @@ management:
 gateway:
   url: http://localhost:9000
 
-allowPath: /login,/product,/actuator
+allowPath: /login,/product,/actuator,/index

@@ -11,7 +11,7 @@
 - RabbitMQ
 - RabbitMQ RPC - Request / Reply Pattern
 - JWT
-- Spring Boot 3.2
+- Spring Boot 3.3
 - Spring Boot Admin
 
 ## Overview
@@ -30,24 +30,20 @@
 
 ### Requirements
 
-- JDK 21
-- Gradle 8.5
-- PostgreSQL
-- RabbitMQ
-- Redis
-- Zipkin
-- Podman(>=3.4) & podman-compose (or Docker & `docker cmopose`)
+- JDK 22
+- Gradle 8.8
+- Podman & `podman-compose` (or Docker & `docker cmopose`)
 
 ### Preparation
 
-Start servers: PostgreSQL, RabbitMQ, Redis, Zipkin
+Create and run containers (PostgreSQL, RabbitMQ, Redis, Zipkin)
 
 ```shell
 cd scripts
 podman-compose up -d
 ```
 
-Or use `docker compose`(Compose V2) / `docker-compose`(Compose V1)
+Or use `docker compose`
 
 ```shell
 cd scripts
@@ -55,8 +51,10 @@ sudo docker compose up -d
 ```
 
 ### Run
-
-Start : `eurekaServer`, `gateway`, `authServer`, `sbAdmin`;  services: `spProduct, spUser, spOrder, spPayment` and Web App: `spWeb`
+Build and run
+- `eurekaServer`, `gateway`, `sbAdmin`
+- `authServer, spProduct, spUser, spOrder, spPayment`
+- `spWeb` (web App)
 
 ```shell
 cd scripts
@@ -80,6 +78,12 @@ cd spTest
 gradle clean test --tests TestAllSuit
 ```
 *see test classes in `spTest/src/test/java/xyz/defe/sp/test/*`*
+
+### Quick run and test
+```shell
+cd scripts
+sh run-and-test.sh
+```
 
 ### Web UI
 

@@ -34,7 +34,7 @@ public class SpWebTestWithUsers {
     private UserService userService;
     @Autowired
     private PaymentRequest paymentRequest;
-
+    private final int atLeast = 2;
     private final int count = 10000;
     private volatile boolean flag = true;
     private AtomicInteger taskCount = new AtomicInteger();
@@ -109,6 +109,13 @@ public class SpWebTestWithUsers {
             }
             System.out.println("getProducts  return");
             return;
+        }
+        for (Product p : products) {
+            if (p.getQuantity() < atLeast) {
+                System.out.println("User : " + user.getName()
+                        + " getProducts failed - product is out of stock,product id:" + p.getId());
+                return;
+            }
         }
         getProductsSucCount.incrementAndGet();
 

@@ -1,7 +1,7 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '3.2.0'
-	id 'io.spring.dependency-management' version '1.1.4'
+	id 'org.springframework.boot' version '3.3.0'
+	id 'io.spring.dependency-management' version '1.1.5'
 	id "com.github.johnrengelman.shadow" version "7.1.2"
 }
 
@@ -14,19 +14,19 @@ repositories {
 }
 
 dependencies {
-	implementation 'com.auth0:java-jwt:4.0.0'
+	implementation 'com.auth0:java-jwt:4.4.0'
 	implementation 'com.google.code.gson:gson:+'
 	implementation 'jakarta.servlet:jakarta.servlet-api:6.0.0'
 
 	implementation 'org.springframework.data:spring-data-redis'
 	compileOnly 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:4.1.0'
+	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:4.1.2'
 }
 
 shadowJar {
 	dependencies {
-		include(dependency('com.auth0:java-jwt:4.0.0'))
+		include(dependency('com.auth0:java-jwt:4.4.0'))
 	}
 	archiveFileName = "${project.name}-${version}.jar"
 }

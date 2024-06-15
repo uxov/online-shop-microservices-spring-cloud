@@ -75,7 +75,7 @@ public class PaymentServiceImpl implements PaymentService {
         } catch (Exception e) {
             ExceptionUtil.warn(e.getMessage());
         }
-        if (order == null) {ExceptionUtil.warn("the order is not able to pay,id=" + orderId);}
+        if (order == null) {ExceptionUtil.warn("the order is not able to pay,id=" + orderId + ",please try it later.");}
 
         //when the order is valid and paymentState=1 then process
         //get user's wallet
