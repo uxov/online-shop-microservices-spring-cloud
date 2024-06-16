@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.0'
 	id 'io.spring.dependency-management' version '1.1.5'
+	id 'com.bmuschko.docker-spring-boot-application' version '9.4.0'
 }
 
 group = 'xyz.defe.sp'
@@ -49,3 +50,15 @@ test {
 }
 
 //test.enabled = false
+
+docker {
+	def registryUrl = 'localhost:5000'
+	springBootApplication {
+		baseImage = 'eclipse-temurin:22-jre-alpine'
+		ports = [9300]
+		images = ["${registryUrl}/sp-order:0.0.1"]
+
+		// Podman rootless service,comment out this line when use Docker
+		url = 'unix:///run/user/1000/podman/podman.sock'
+	}
+}

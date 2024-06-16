@@ -69,8 +69,8 @@ Add test data before run test
 cd spTest
 gradle clean test -i --tests AddTestData
 ```
-*check codes  in `spTest/src/test/java/xyz/defe/sp/test/AddTestData.java`*    
-
+*check codes  in `spTest/src/test/java/xyz/defe/sp/test/AddTestData.java`*  
+  
 Run test classes
 
 ```shell
@@ -96,3 +96,42 @@ RabbitMQ > http://localhost:15672
 Spring Boot Admin > http://localhost:11000/wallboard  
 
 ![Spring Boot Admin Overview](./images/sbAdmin-overview.png)
+
+
+## Build docker image
+
+Create Dockerfile
+```shell
+gradle dockerCreateDockerfile
+```
+*It will create a `Dockerfile` in `./build/docker/`*  
+  
+Build image
+```shell
+gradle dockerBuildImage
+```
+
+### Podman
+Execute the command before build image :
+```shell
+systemctl --user restart podman
+```
+
+### Docker
+Before build image, comment out this line in `build.gradle` file :
+```groovy
+url = 'unix:///run/user/1000/podman/podman.sock'
+```
+![](./images/build-image.png)
+
+When you get the following error :
+> Got permission denied while trying to connect to the Docker daemon socket
+
+Add your user to `docker` group :
+```shell
+sudo groupadd docker
+sudo gpasswd -a ${USER} docker
+sudo systemctl restart docker
+newgrp docker
+```
+Then you can running Docker without `sudo`, If that doesn't work, try logout or rebooting.
