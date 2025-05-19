@@ -1,8 +1,7 @@
 package xyz.defe.sp.test.feignClient.spWeb;
 
 import org.assertj.core.util.Strings;
-import org.junit.jupiter.api.RepeatedTest;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import xyz.defe.sp.common.entity.spOrder.SpOrder;
@@ -16,7 +15,10 @@ import xyz.defe.sp.test.Users;
 import xyz.defe.sp.test.feignClient.UserService;
 import xyz.defe.sp.test.restTemplate.services.spPayment.PaymentRequest;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
@@ -44,8 +46,9 @@ public class SpWebTestWithUsers {
     private AtomicInteger newOrderSucCount = new AtomicInteger();
     private AtomicInteger paySucCount = new AtomicInteger();
     private AtomicInteger getPaidOrderSucCount = new AtomicInteger();
+    private Map<String, String> tokenMap = new HashMap<>();
 
-    @RepeatedTest(1)
+    @RepeatedTest(10)
     public void run() throws InterruptedException {
         List<Account> accounts = getAccounts(count);
         ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
@@ -68,11 +71,28 @@ public class SpWebTestWithUsers {
                 ex.printStackTrace();
                 return null;
             });
-            Thread.sleep(50);   //control request rate
+            Thread.sleep(15);
+//            Thread.sleep(5);   //control request rate
         }
 
         while (flag) {
             Thread.sleep(5000);
+        }
+    }
+
+    @BeforeEach
+    void beforeEach() throws IOException {
+        readFlag();
+    }
+
+    private void readFlag() throws IOException {
+        Path filePath = Path.of("src/test/resources/stopFlag");
+        String flag = Files.readString(filePath).trim();
+        int fg = Integer.parseInt(flag);
+        System.out.println("flag = " + fg);
+        if (fg == 0) {
+            System.out.println("stop test");
+            System.exit(0);
         }
     }
 
@@ -100,7 +120,7 @@ public class SpWebTestWithUsers {
         Random random = new Random();
 
         // 1. get products
-        List<Product> products = spWeb.getProducts(1, 10).getData();
+        List<Product> products = spWeb.getProducts(1, 3).getData();
         if (products == null || products.size() < 3) {
             if (products == null) {
                 System.out.println("User : " + user.getName() + " getProducts failed - products is null");
@@ -120,18 +140,16 @@ public class SpWebTestWithUsers {
         getProductsSucCount.incrementAndGet();
 
         // 2. user login
-        Map<String, String> map = spWeb.login(user.getUname(), user.getPwd()).getData();
-        String uid = map.get("uid");
-        String token = map.get("token");
-        if (Strings.isNullOrEmpty(uid) || Strings.isNullOrEmpty(token)) {
-            if (Strings.isNullOrEmpty(uid)) {
-                System.out.println("User : " + user.getName() + " login failed - uid isNullOrEmpty");
-            } else {
-                System.out.println("User : " + user.getName() + " login failed - token isNullOrEmpty");
-            }
-            return;
+        String token = "";
+        if (tokenMap.get(user.getId()) == null) {
+            Map<String, String> map = spWeb.login(user.getUname(), user.getPwd()).getData();
+            token = map.get("token");
+            loginSucCount.incrementAndGet();
+            tokenMap.put(user.getId(), token);
+        } else {
+            token = tokenMap.get(user.getId());
         }
-        loginSucCount.incrementAndGet();
+
 
         // 3. add products to cart and submit the order
         String orderToken = spWeb.getOrderToken(token).getData();
@@ -141,7 +159,7 @@ public class SpWebTestWithUsers {
         }
         getOrderTokenSucCount.incrementAndGet();
         Cart cart = new Cart();
-        cart.setUid(uid);
+        cart.setUid(user.getId());
         cart.setOrderToken(orderToken);
         cart.getCounterMap().put(products.get(0).getId(), random.nextInt(2) + 1);
         cart.getCounterMap().put(products.get(1).getId(), random.nextInt(2) + 1);
@@ -182,18 +200,18 @@ public class SpWebTestWithUsers {
         getPaidOrderSucCount.incrementAndGet();
     }
 
-    @Test
+//    @Test
     public void testGetAccounts() {
         List<Account> accounts = getAccounts(10);
         assertEquals(10, accounts.size());
         assertTrue(accounts.get(0).getUname().equals(Users.ALEN.uname));
     }
 
-    public List<Account> addTestUsers(List<Account> existAccList) {
+    public List<Account> addTestUsers(List<Account> existAccList, int n) {
         Set<String> existsSet = existAccList.stream().map(a -> a.getId()).collect(Collectors.toSet());
         Set<String> newSet = new HashSet<>(existsSet);
         List<Account> newAccounts = new ArrayList<>();
-        while (newSet.size() < 10000) {
+        while (newSet.size() < n) {
             String uname = UUID.randomUUID().toString().substring(0, 8);
             if (!newSet.contains(uname)) {
                 Account account = new Account();
@@ -216,8 +234,8 @@ public class SpWebTestWithUsers {
     public List<Account> getAccounts(int n) {
         List<Account> accountList;
         List<Account> existAccList = userService.getAll().getData();
-        if (existAccList.size() < 10000) {
-            accountList = addTestUsers(existAccList);
+        if (existAccList.size() < n) {
+            accountList = addTestUsers(existAccList, n);
             System.out.println("addTestUsers()");
         } else {
             accountList = existAccList;
@@ -231,7 +249,7 @@ public class SpWebTestWithUsers {
     void createUserWallet(Account user) {
         Wallet wallet = new Wallet();
         wallet.setUserId(user.getId());
-        wallet.setBalance(new BigDecimal(100000.00));
+        wallet.setBalance(new BigDecimal(100000000.00));
         wallet.setCreatedTime(new Date());
         Wallet wa = paymentRequest.createUserWallet(wallet).getData();
         assertNotNull(wallet.getBalance());

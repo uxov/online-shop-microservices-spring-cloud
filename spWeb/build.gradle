@@ -23,6 +23,7 @@ dependencies {
 	implementation 'redis.clients:jedis:5.1.0'
 	implementation 'com.google.code.gson:gson:+'
 	implementation 'com.google.guava:guava:32.1.3-jre'
+	implementation 'org.redisson:redisson-spring-boot-starter:3.31.0'
 	implementation 'de.codecentric:spring-boot-admin-starter-client:3.1.8'
 
 	implementation 'org.springframework.data:spring-data-redis'
@@ -46,14 +47,13 @@ test {
 	useJUnitPlatform()
 }
 
-//test.enabled = false
-
 docker {
 	def registryUrl = 'localhost:5000'
 	springBootApplication {
 		baseImage = 'eclipse-temurin:22-jre-alpine'
 		ports = [8000]
 		images = ["${registryUrl}/sp-web:0.0.1"]
+		mainClassName = 'xyz.defe.sp.user.SpWebApplication'
 
 		// Podman rootless service,comment out this line when use Docker
 		url = 'unix:///run/user/1000/podman/podman.sock'

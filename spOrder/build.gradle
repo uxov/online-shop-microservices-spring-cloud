@@ -49,14 +49,13 @@ test {
 	useJUnitPlatform()
 }
 
-//test.enabled = false
-
 docker {
 	def registryUrl = 'localhost:5000'
 	springBootApplication {
 		baseImage = 'eclipse-temurin:22-jre-alpine'
 		ports = [9300]
 		images = ["${registryUrl}/sp-order:0.0.1"]
+		mainClassName = 'xyz.defe.sp.user.SpOrderApplication'
 
 		// Podman rootless service,comment out this line when use Docker
 		url = 'unix:///run/user/1000/podman/podman.sock'

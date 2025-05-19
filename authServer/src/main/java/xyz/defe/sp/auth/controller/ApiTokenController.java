@@ -3,6 +3,7 @@ package xyz.defe.sp.auth.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import xyz.defe.sp.auth.service.ApiTokenService;
 import xyz.defe.sp.common.entity.spUser.ApiToken;
@@ -16,7 +17,8 @@ public class ApiTokenController {
     private ApiTokenService apiTokenService;
 
     @PostMapping
-    public ApiToken getToken(String uname, String pwd) {
+    public ApiToken getToken( @RequestParam(required = true) String uname,
+                              @RequestParam(required = true) String pwd) {
         ApiToken apiToken = apiTokenService.generateToken(uname, pwd);
         return apiToken;
     }

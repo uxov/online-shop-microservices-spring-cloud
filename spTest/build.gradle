@@ -41,6 +41,12 @@ dependencyManagement {
 	}
 }
 
+gradle.taskGraph.whenReady { taskGraph ->
+	if (taskGraph.hasTask(build)) {
+		test.enabled = false
+	}
+}
+
 test {
 	useJUnitPlatform()
 

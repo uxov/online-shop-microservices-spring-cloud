@@ -8,7 +8,6 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.support.AmqpHeaders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.Header;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Service;
 import xyz.defe.sp.common.Const;
 import xyz.defe.sp.common.pojo.DeductionResult;
@@ -25,29 +24,37 @@ public class MqMessageHandler {
 
     //listen messages from ORDER SERVICE
     //RabbitMQ RPC - Request/Reply Pattern
-    //process product quantity deduction request from ORDER SERVICE
-    @SendTo(Const.QUEUE_DEDUCT_QUANTITY_REPLY)
-    @RabbitListener(queuesToDeclare = @Queue(Const.QUEUE_DEDUCT_QUANTITY_REQUEST), concurrency = "5-20")  //it will create queue if not exists
-    public DeductionResult deductQuantityHandle(OrderMsg msg, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException {
-        log.debug("got message(deduct product quantity) from ORDER SERVICE,OrderMsg id={}", msg.getId());
-
-        DeductionResult result = new DeductionResult(msg.getOrderId(), "");
-        if (msg == null) {result.setMessage("OrderMsg is null, msg id="+msg.getId());}
-
+    //process product quantity deduction request for ORDER SERVICE
+    //`queuesToDeclare` will create queue if not exists
+    @RabbitListener(queuesToDeclare = @Queue(Const.QUEUE_DEDUCT_QUANTITY_REQUEST), concurrency = "10-50")
+    public OrderMsg deductQuantityHandle(OrderMsg msg, Channel channel,
+                                                @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException {
+        OrderMsg resultMsg = new OrderMsg();
+        DeductionResult result = new DeductionResult();
         //if not add catch block,when exception throw out,exception info will keep print
         //because the message is not be consumed and MQ server will keep resend message
         try {
+            log.debug("got message(deduct product quantity) from ORDER SERVICE,OrderMsg id={}", msg.getId());
+
+            result.setOrderId(msg.getOrderId());
             quantityService.checkAndDeduct(msg.getOrderId(), msg.getCounterMap());
-            channel.basicAck(tag, false);
             result.setSuccessful(true);
-        } catch (Exception e) {
-            //drop message
+
+            resultMsg.setId(msg.getId());
+            resultMsg.setFrom(Const.PRODUCT_SERVER);
+            resultMsg.setTo(Const.ORDER_SERVER);
+            resultMsg.setRemark("deduct product quantity reply");
+
             channel.basicAck(tag, false);
+        } catch (Exception e) {
             result.setMessage(e.getMessage());
-            log.error("consume message failed,drop message,OrderMsg id={},{}", msg.getId(), e.getMessage());
-            e.printStackTrace();
+
+            //drop message,the sender will resend the message
+            channel.basicAck(tag, false);
+            log.error("consume message failed,drop message,OrderMsg id={},{}", msg.getId(), e.getMessage(), e);
         }
-        log.debug("replay to ORDER SERVICE,result={}", result.isSuccessful());
-        return result;
+        resultMsg.setDeductionResult(result);
+        log.info("replay to ORDER SERVICE,result={}", result.isSuccessful());
+        return resultMsg;
     }
 }

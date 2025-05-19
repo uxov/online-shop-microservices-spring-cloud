@@ -13,6 +13,16 @@ spring:
       type: web
   output.ansi.enabled: always
 
+logging:
+  file:
+    name: ../../logs/authServer.log
+  logback:
+    rollingpolicy:
+      max-history: 3
+      max-file-size: 100MB
+      total-size-cap: 100MB
+      clean-history-on-start: true
+
 eureka:
   client:
     serviceUrl:
@@ -37,5 +47,5 @@ user-service:
 
 token:
   secretKey: tsk-32a0351c-7972-490f-8c94-e5d6c84abcdb
-  # 1 hours
+  # 1 hour
   expiredMillis: 3600000

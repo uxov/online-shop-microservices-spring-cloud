@@ -1,11 +1,11 @@
 package xyz.defe.sp.common.entity.general;
 
+import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import xyz.defe.sp.common.enums.LocalMsgState;
+
 import java.util.Date;
 
 @Entity
@@ -17,9 +17,9 @@ public class LocalMessage {
     private String msgJson;
     private String msgType;
 
-    //{0:unsent, 1:sent}
-    private Integer sendState = 0;
-    private Integer retry = 0;
+    @Enumerated(EnumType.STRING)
+    private LocalMsgState msgState = LocalMsgState.INIT;
+    private Integer resendTimes = 0;
 
     @CreationTimestamp
     @Column(nullable = false)
@@ -53,20 +53,20 @@ public class LocalMessage {
         this.msgType = msgType;
     }
 
-    public Integer getSendState() {
-        return sendState;
+    public LocalMsgState getMsgState() {
+        return msgState;
     }
 
-    public void setSendState(Integer sendState) {
-        this.sendState = sendState;
+    public void setMsgState(LocalMsgState msgState) {
+        this.msgState = msgState;
     }
 
-    public Integer getRetry() {
-        return retry;
+    public Integer getResendTimes() {
+        return resendTimes;
     }
 
-    public void setRetry(Integer retry) {
-        this.retry = retry;
+    public void setResendTimes(Integer resendTimes) {
+        this.resendTimes = resendTimes;
     }
 
     public Date getCreatedTime() {

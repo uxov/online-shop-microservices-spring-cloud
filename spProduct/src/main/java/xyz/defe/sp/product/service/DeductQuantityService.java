@@ -29,6 +29,10 @@ public class DeductQuantityService {
 
     @Transactional
     public void deductQuantity(String orderId, Map<String, Integer> counterMap) {
+        if (counterMap == null || counterMap.isEmpty()) {
+            ExceptionUtil.warn("counterMap is null or empty");
+        }
+
         int remain = 0;
         Set<String> productIdSet = counterMap.keySet();
         List<Product> products = productDao.findAllById(productIdSet);

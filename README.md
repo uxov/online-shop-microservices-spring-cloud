@@ -63,14 +63,6 @@ sh run-jars.sh
 
 ### Test
 
-Add test data before run test
-
-```shell
-cd spTest
-gradle clean test -i --tests AddTestData
-```
-*check codes  in `spTest/src/test/java/xyz/defe/sp/test/AddTestData.java`*  
-  
 Run test classes
 
 ```shell

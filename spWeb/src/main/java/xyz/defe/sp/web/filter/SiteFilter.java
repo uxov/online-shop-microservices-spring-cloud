@@ -5,12 +5,12 @@ import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
-import xyz.defe.sp.common.Cache;
 import xyz.defe.sp.common.exception.ExceptionUtil;
 import xyz.defe.sp.web.Constant;
 
@@ -23,7 +23,7 @@ public class SiteFilter implements Filter {
     private List<String> allowPath;
 
     @Autowired
-    private Cache cache;
+    private RedissonClient redisson;
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Override
@@ -43,14 +43,12 @@ public class SiteFilter implements Filter {
         if (!startWithAllowPath(path, allowPath)) {
             if (Strings.isNullOrEmpty(token)) {
                 ExceptionUtil.warn("token is empty!");
-            } else if (null == cache.get(Constant.TOKEN_PREFIX + token)) {
-                ExceptionUtil.warn("token not valid!");
-            } else {
-                chain.doFilter(req, res);
             }
-        } else {
-            chain.doFilter(req, res);
+            if (!redisson.getBucket(Constant.TOKEN_PREFIX + token).isExists()) {
+                ExceptionUtil.warn("token not valid!");
+            }
         }
+        chain.doFilter(req, res);
     }
 
     private boolean startWithAllowPath(String path, List<String> allowPath) {

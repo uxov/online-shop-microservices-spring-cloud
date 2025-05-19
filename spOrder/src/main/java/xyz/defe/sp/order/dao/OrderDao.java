@@ -33,16 +33,16 @@ public interface OrderDao extends JpaRepository<SpOrder, String> {
 
     @Modifying
     @Transactional
-    @Query("update SpOrder o set o.valid=?2 where id=?1 ")
+    @Query("update SpOrder o set o.valid=?2 ,o.updatedTime=CURRENT_TIMESTAMP where id=?1 ")
     void setOrderState(String id, boolean state);
 
     @Modifying
     @Transactional
-    @Query("update SpOrder o set o.valid=false,o.invalidReason=?2 where id=?1 ")
+    @Query("update SpOrder o set o.valid=false,o.invalidReason=?2 ,o.updatedTime=CURRENT_TIMESTAMP where id=?1 ")
     void setOrderInvalid(String id, String invalidReason);
 
     @Modifying
     @Transactional
-    @Query("update SpOrder o set o.paymentState=?2 where id=?1 ")
+    @Query("update SpOrder o set o.paymentState=?2 ,o.updatedTime=CURRENT_TIMESTAMP where id=?1 ")
     void setOrderPaymentState(String id, int state);
 }

@@ -50,4 +50,13 @@ public class OrderServiceTest {
         SpOrder order = orderService.newOrder(cart).getData();
         assertTrue(!Strings.isNullOrEmpty(order.getId()));
     }
+
+    @Test
+    void getOrderWhenOrderIdIsEmptyOrNull() {
+        SpOrder order = orderService.getOrder("").getData();
+        assertNull(order);
+
+        order = orderService.getOrder(null).getData();
+        assertNull(order);
+    }
 }

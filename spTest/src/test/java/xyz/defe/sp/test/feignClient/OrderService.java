@@ -17,6 +17,9 @@ public interface OrderService {
     @PostMapping("order")
     ResponseData<SpOrder> newOrder(@RequestBody Cart cart);
 
+    @GetMapping("order/{id}")
+    ResponseData<SpOrder> getOrder(@PathVariable String id);
+
     @GetMapping("order/toPay/{id}")
     ResponseData<SpOrder> getToPayOrder(@PathVariable String id);
 }

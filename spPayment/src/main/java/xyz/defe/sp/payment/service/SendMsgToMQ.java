@@ -21,17 +21,15 @@ public class SendMsgToMQ {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     public void resendOrderMsg() {
-        List<LocalMessage> list = localMessageService.getRetryOrderMsgs();
+        List<LocalMessage> list = localMessageService.getResendOrderMsgs();
         String msgJson = "";
         for (LocalMessage m : list) {
             try {
                 msgJson = m.getMsgJson();
                 OrderMsg msg = gson.fromJson(msgJson, OrderMsg.class);
-                localMessageService.setRetry(m.getId(), 0); //before send()
-                mqMessageService.send(m.getId(), msg);
+                mqMessageService.send(msg);
             } catch (Exception e) {
-                log.error("send message failed,OrderMsg id={}", m.getId());
-                e.printStackTrace();
+                log.error("send message failed,OrderMsg id={}", m.getId(), e);
             }
         }
     }

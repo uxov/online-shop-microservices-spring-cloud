@@ -48,8 +48,6 @@ public class PaymentTest {
         SpOrder order = orderRequest.submitOrder(cart).getData();
         assertTrue(!Strings.isNullOrEmpty(order.getId()));
 
-        Thread.sleep(100);
-
         SpOrder toPayOrder = orderRequest.getToPayOrder(order.getId()).getData();
         assertTrue(toPayOrder.isValid());
         assertEquals(order.getId(), toPayOrder.getId());

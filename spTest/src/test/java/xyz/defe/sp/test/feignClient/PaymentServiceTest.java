@@ -13,8 +13,7 @@ import xyz.defe.sp.test.Users;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class PaymentServiceTest {
@@ -46,8 +45,6 @@ public class PaymentServiceTest {
         cart.getCounterMap().put(products.get(1).getId(), 2);
         SpOrder order = orderService.newOrder(cart).getData();
         assertTrue(!Strings.isNullOrEmpty(order.getId()));
-
-        Thread.sleep(300);
 
         SpOrder toPayOrder = orderService.getToPayOrder(order.getId()).getData();
         assertTrue(toPayOrder.isValid());

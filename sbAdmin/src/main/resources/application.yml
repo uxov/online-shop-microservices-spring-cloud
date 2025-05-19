@@ -4,6 +4,16 @@ spring:
   application:
     name: spring-boot-admin
 
+logging:
+  file:
+    name: ../../logs/sbAdmin.log
+  logback:
+    rollingpolicy:
+      max-history: 3
+      max-file-size: 100MB
+      total-size-cap: 100MB
+      clean-history-on-start: true
+
 eureka:
   client:
     serviceUrl:

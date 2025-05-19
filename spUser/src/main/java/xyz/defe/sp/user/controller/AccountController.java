@@ -1,11 +1,9 @@
 package xyz.defe.sp.user.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import xyz.defe.sp.common.entity.spUser.Account;
+import xyz.defe.sp.common.exception.ExceptionUtil;
 import xyz.defe.sp.common.pojo.ResponseData;
 import xyz.defe.sp.common.response.ResponseDataResult;
 import xyz.defe.sp.user.service.AccountService;
@@ -25,8 +23,12 @@ public class AccountController {
     }
 
     @PostMapping("account/verify")
-    public Account verify(String uname, String pwd){
-        return accountService.verify(uname, pwd);
+    public Account verify(@RequestParam String uname, @RequestParam String pwd){
+        Account account = accountService.verify(uname, pwd);
+        if (account == null) {
+            ExceptionUtil.warn("account verify failed");
+        }
+        return account;
     }
 
     @GetMapping("accounts")

@@ -30,7 +30,7 @@ spring:
                 fallbackUri: forward:/productServiceFallback
 #            - name: RequestRateLimiter
 #              args:
-#                key-resolver: "#{@pahtKeyResolver}"
+#                key-resolver: "#{@pathKeyResolver}"
 #                redis-rate-limiter.replenishRate: 1000
 #                redis-rate-limiter.burstCapacity: 1200
 #                redis-rate-limiter.requestedTokens: 1
@@ -56,12 +56,22 @@ spring:
             name: globalFallback
             fallbackUri: forward:/defaultFallback
         ## global rate limiter
-        - name: RequestRateLimiter
-          args:
-            key-resolver: "#{@pahtKeyResolver}"
-            redis-rate-limiter.replenishRate: 1000
-            redis-rate-limiter.burstCapacity: 1200
-            redis-rate-limiter.requestedTokens: 1
+#        - name: RequestRateLimiter
+#          args:
+#            key-resolver: "#{@globalKeyResolver}"
+#            redis-rate-limiter.replenishRate: 100
+#            redis-rate-limiter.burstCapacity: 120
+#            redis-rate-limiter.requestedTokens: 1
+
+logging:
+  file:
+    name: ../../logs/gateway.log
+  logback:
+    rollingpolicy:
+      max-history: 3
+      max-file-size: 100MB
+      total-size-cap: 100MB
+      clean-history-on-start: true
 
 eureka:
   client:

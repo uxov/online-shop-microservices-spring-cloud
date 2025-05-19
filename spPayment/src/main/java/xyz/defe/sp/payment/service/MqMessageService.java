@@ -17,11 +17,11 @@ public class MqMessageService {
     private RabbitTemplate rabbitTemplate;
     final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    public void send(String localMessageId, OrderMsg message) {
+    public void send(OrderMsg message) {
         CompletableFuture.runAsync(() -> {
             rabbitTemplate.convertAndSend(AmqpConfig.EXCHANGE_NAME,
                     AmqpConfig.ROUTING_KEY_SET_ORDER_PAID, message,
-                    new CorrelationData(localMessageId));
+                    new CorrelationData(message.getId()));
             log.info("send message to ORDER SERVICE - to set order paid");
         });
     }

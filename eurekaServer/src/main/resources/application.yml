@@ -7,3 +7,13 @@ eureka:
   server:
     enable-self-preservation: false
     eviction-interval-timer-in-ms: 5000
+
+logging:
+  file:
+    name: ../../logs/eureka.log
+  logback:
+    rollingpolicy:
+      max-history: 3
+      max-file-size: 100MB
+      total-size-cap: 100MB
+      clean-history-on-start: true

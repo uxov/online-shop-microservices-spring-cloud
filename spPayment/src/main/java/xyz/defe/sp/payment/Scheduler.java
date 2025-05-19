@@ -9,6 +9,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import xyz.defe.sp.payment.service.SendMsgToMQ;
 
+import java.util.concurrent.TimeUnit;
+
 @Component
 public class Scheduler {
     @Autowired
@@ -20,12 +22,11 @@ public class Scheduler {
     @Scheduled(fixedDelay = 15000)
     public void checkAndSendMessage() {
         RLock lock = redisson.getLock("scheduledTask-spPayment-checkAndSendMessage");
-        if (!lock.tryLock()) {return;}
         try {
+            if (!lock.tryLock(3, 30, TimeUnit.SECONDS)) {return;}
             sendMsgToMQ.resendOrderMsg();
         } catch (Exception e) {
-            log.error(e.getMessage());
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         } finally {
             lock.unlock();
         }

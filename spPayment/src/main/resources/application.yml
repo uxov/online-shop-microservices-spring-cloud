@@ -40,6 +40,16 @@ spring:
     date-format: yyyy-MM-dd HH:mm:ss
   output.ansi.enabled: always
 
+logging:
+  file:
+    name: ../../logs/spPayment.log
+  logback:
+    rollingpolicy:
+      max-history: 3
+      max-file-size: 100MB
+      total-size-cap: 100MB
+      clean-history-on-start: true
+
 eureka:
   client:
     serviceUrl:
@@ -61,3 +71,5 @@ management:
 
 sp-order-service:
   url: SP-ORDER-SERVICE/orderService/
+sp-product-service:
+  url: SP-PRODUCT-SERVICE/productService/

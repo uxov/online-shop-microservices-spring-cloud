@@ -1,6 +1,5 @@
 package xyz.defe.sp.payment.config;
 
-import com.google.common.base.Strings;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +8,7 @@ import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import xyz.defe.sp.common.enums.LocalMsgState;
 import xyz.defe.sp.payment.service.LocalMessageService;
 
 @Component
@@ -32,9 +32,7 @@ public class RabbitTemplateConfig implements RabbitTemplate.ConfirmCallback,Rabb
         if (ack) {
             log.debug("message sent successful,correlation id={}", correlationId);
         } else {
-            if (!Strings.isNullOrEmpty(correlationId)) {
-                localMessageService.setRetry(correlationId, 1);
-            }
+            localMessageService.setMessageState(correlationId, LocalMsgState.PENDING_RESEND);
             log.error("message sent failed,{},correlation id={}", cause, correlationId);
         }
     }
@@ -42,9 +40,7 @@ public class RabbitTemplateConfig implements RabbitTemplate.ConfirmCallback,Rabb
     @Override
     public void returnedMessage(ReturnedMessage returned) {
         String correlationId = returned.getMessage().getMessageProperties().getCorrelationId();
-        if (!Strings.isNullOrEmpty(correlationId)) {
-            localMessageService.setRetry(correlationId, 1);
-        }
+        localMessageService.setMessageState(correlationId, LocalMsgState.SEND_FAILED);
         log.error("RabbitMQ ReturnCallback:{},{},{},{},{},{}",
                 returned.getMessage(), returned.getReplyCode(), returned.getReplyText(),
                 returned.getExchange(), returned.getRoutingKey());

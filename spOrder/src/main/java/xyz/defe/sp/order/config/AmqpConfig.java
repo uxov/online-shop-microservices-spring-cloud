@@ -16,18 +16,24 @@ public class AmqpConfig {
     }
 
     @Bean
-    Queue queueForDeductQuantityRequest() {
-        return new Queue(Const.QUEUE_DEDUCT_QUANTITY_REQUEST);
+    Queue deductQuantityRequest() {
+        return new Queue(Const.QUEUE_DEDUCT_QUANTITY_REQUEST, true);
     }
 
     @Bean
-    Queue queueForDeductQuantityReply() {
-        return new Queue(Const.QUEUE_DEDUCT_QUANTITY_REPLY);
+    Queue deductQuantityReply() {
+        return new Queue(Const.QUEUE_DEDUCT_QUANTITY_REPLY, true);
     }
 
     @Bean
-    Binding binding(Queue queueForDeductQuantityRequest, DirectExchange exchange) {
-        return BindingBuilder.bind(queueForDeductQuantityRequest).to(exchange)
+    Binding requestBinding(Queue deductQuantityRequest, DirectExchange exchange) {
+        return BindingBuilder.bind(deductQuantityRequest).to(exchange)
                 .with(Const.ROUTING_KEY_DEDUCT_QUANTITY_REQUEST);
+    }
+
+    @Bean
+    Binding responseBinding(Queue deductQuantityReply, DirectExchange exchange) {
+        return BindingBuilder.bind(deductQuantityReply).to(exchange)
+                .with(Const.ROUTING_KEY_DEDUCT_QUANTITY_REPLY);
     }
 }

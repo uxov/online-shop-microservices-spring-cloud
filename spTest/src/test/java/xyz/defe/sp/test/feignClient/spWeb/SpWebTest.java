@@ -1,7 +1,7 @@
 package xyz.defe.sp.test.feignClient.spWeb;
 
 import org.assertj.core.util.Strings;
-import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import xyz.defe.sp.common.entity.spOrder.SpOrder;
@@ -22,12 +22,15 @@ public class SpWebTest {
     @Autowired
     private SpWeb spWeb;
 
-    @RepeatedTest(1)
+    @Test
     public void request() {
         //1. get products
         List<Product> products = spWeb.getProducts(1, 10).getData();
         assertTrue(!products.isEmpty());
-        products.forEach(p -> assertTrue(p.getQuantity() > 0));
+        products.forEach(p -> {
+            System.out.println(p.getName());
+            assertTrue(p.getQuantity() > 0);
+        });
 
         //2. user login
         Map<String, String> map = spWeb.login(Users.MIKE.uname, Users.MIKE.pwd).getData();

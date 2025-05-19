@@ -20,6 +20,16 @@ spring:
       client:
         url: http://localhost:11000
 
+logging:
+  file:
+    name: ../../logs/spWeb.log
+  logback:
+    rollingpolicy:
+      max-history: 3
+      max-file-size: 100MB
+      total-size-cap: 100MB
+      clean-history-on-start: true
+
 management:
   endpoints:
     web:

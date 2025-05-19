@@ -32,6 +32,7 @@ docker {
 		baseImage = 'eclipse-temurin:22-jre-alpine'
 		ports = [8761]
 		images = ["${registryUrl}/eureka-server:0.0.1"]
+		mainClassName = 'xyz.defe.sp.user.SpUserApplication'
 
 		// Podman rootless service,comment out this line when use Docker
 		url = 'unix:///run/user/1000/podman/podman.sock'

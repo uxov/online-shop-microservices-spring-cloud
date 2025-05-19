@@ -4,7 +4,6 @@ set -e
 
 cd "$(dirname "$0")"
 
-mkdir -p ../logs &&
 gradle clean build -p ../spCommon/ &&
 
 cd ./build-and-run/

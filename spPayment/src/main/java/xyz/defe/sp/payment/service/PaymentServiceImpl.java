@@ -22,7 +22,10 @@ import xyz.defe.sp.payment.dao.WalletDao;
 
 import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
@@ -36,6 +39,8 @@ public class PaymentServiceImpl implements PaymentService {
     private PaymentLogDao paymentLogDao;
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private ProductService productService;
     @Autowired
     private LocalMessageService localMessageService;
     @Autowired
@@ -54,11 +59,11 @@ public class PaymentServiceImpl implements PaymentService {
         CheckParam.check(orderId, "orderId is null or empty");
 
         RLock lock = getLockByUid(uid);
-        lock.lock();
+        lock.lock(30, TimeUnit.SECONDS);
         try {
             PaymentLog record = paymentLogDao.findByOrderId(orderId);
             if (record != null) {
-                ExceptionUtil.warn("the order is paid,id=" + orderId);
+                ExceptionUtil.warn("the order is paid,orderId=" + orderId);
             }
             return pay(orderId);
         } finally {
@@ -71,11 +76,11 @@ public class PaymentServiceImpl implements PaymentService {
     public PaymentLog pay(String orderId) {
         SpOrder order = null;
         try {
-            order = orderService.getToPayOrder(orderId).get();
+            order = orderService.getToPayOrder(orderId);
         } catch (Exception e) {
             ExceptionUtil.warn(e.getMessage());
         }
-        if (order == null) {ExceptionUtil.warn("the order is not able to pay,id=" + orderId + ",please try it later.");}
+        if (order == null) {ExceptionUtil.warn("the order is not able to pay,order id=" + orderId + ",please try it later.");}
 
         //when the order is valid and paymentState=1 then process
         //get user's wallet
@@ -86,13 +91,18 @@ public class PaymentServiceImpl implements PaymentService {
 
         Cart cart = gson.fromJson(order.getCartJson(),
                 new TypeToken<Cart>(){}.getType());
-        Set<Product> productSet = cart.getProductSet();
+        Set<Product> productsFromOrder = cart.getProductSet();
+        Set<String> productIdSet = productsFromOrder.stream()
+                .map(Product::getId).collect(Collectors.toSet());
+
+        //get lastest products info
+        List<Product> productList = productService.getProducts(productIdSet);
 
         //calculate
         double sum = 0.00;
         int count = 0;
         double price = 0.00;
-        for (Product product : productSet) {
+        for (Product product : productList) {
             count = cart.getCounterMap().get(product.getId());
             price = product.getPrice().doubleValue();
             sum += price * count;
@@ -118,11 +128,12 @@ public class PaymentServiceImpl implements PaymentService {
         message.setOrderId(order.getId());
         message.setFrom(Const.PAYMENT_SERVER);
         message.setTo(Const.ORDER_SERVER);
+        message.setRemark("pay successful");
         //save message to local table
-        localMessageService.saveOrderMessage(message, 1);
+        localMessageService.saveOrderMessage(message);
         log.info("pay successful,order id={}", order.getId());
         //send message
-        mqMessageService.send(message.getId(), message);
+        mqMessageService.send(message);
 
         return record;
     }

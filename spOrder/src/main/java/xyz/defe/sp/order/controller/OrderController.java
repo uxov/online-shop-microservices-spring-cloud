@@ -1,8 +1,8 @@
 package xyz.defe.sp.order.controller;
 
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import xyz.defe.sp.common.Cache;
 import xyz.defe.sp.common.Const;
 import xyz.defe.sp.common.entity.spOrder.SpOrder;
 import xyz.defe.sp.common.pojo.Cart;
@@ -17,7 +17,7 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
     @Autowired
-    public Cache cache;
+    public RedissonClient redisson;
 
     /**
      * to prevent duplicate submissions
@@ -35,7 +35,7 @@ public class OrderController {
         try {
             return orderService.newOrder(cart);
         } catch (Throwable e) {
-            cache.delete(Const.TOKEN_ORDER_PREFIX + cart.getOrderToken());
+            redisson.getBucket(Const.TOKEN_ORDER_PREFIX + cart.getOrderToken()).delete();
             throw e;
         }
     }

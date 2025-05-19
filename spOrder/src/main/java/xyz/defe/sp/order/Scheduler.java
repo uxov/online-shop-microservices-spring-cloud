@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 import xyz.defe.sp.order.service.OrderService;
 import xyz.defe.sp.order.service.SendMsgToMQ;
 
+import java.util.concurrent.TimeUnit;
+
 @Component
 public class Scheduler {
     @Autowired
@@ -22,14 +24,13 @@ public class Scheduler {
 
     @Scheduled(fixedDelay = 15000)
     public void checkAndSendMessage() {
-        //make sure to run only once when running multiple service instances
+        //ensure that only one instance executes scheduled tasks at the same time
         RLock lock = redisson.getLock("scheduledTask-spOrder-checkAndSendMessage");
-        if (!lock.tryLock()) {return;}
         try {
+            if (!lock.tryLock(3, 30, TimeUnit.SECONDS)) {return;}
             sendMsgToMQ.resendOrderMsg();
         } catch (Exception e) {
-            log.error(e.getMessage());
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         } finally {
             lock.unlock();
         }
@@ -38,12 +39,11 @@ public class Scheduler {
     @Scheduled(fixedDelay = 1800000)
     public void checkExpiredOrders() {
         RLock lock = redisson.getLock("scheduledTask-spOrder-checkExpiredOrders");
-        if (!lock.tryLock()) {return;}
         try {
+            if (!lock.tryLock(3, 30,TimeUnit.SECONDS)) {return;}
             orderService.processExpiredOrders();
         } catch (Exception e) {
-            log.error(e.getMessage());
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         } finally {
             lock.unlock();
         }

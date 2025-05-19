@@ -7,6 +7,7 @@ import org.springframework.amqp.rabbit.AsyncRabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import xyz.defe.sp.common.entity.general.LocalMessage;
+import xyz.defe.sp.common.enums.LocalMsgState;
 import xyz.defe.sp.common.pojo.OrderMsg;
 
 import java.util.List;
@@ -24,17 +25,17 @@ public class SendMsgToMQ {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     public void resendOrderMsg() {
-        List<LocalMessage> list = localMessageService.getRetryOrderMsgs();
+        List<LocalMessage> list = localMessageService.getResendOrderMsgs();
         String msgJson = "";
         for (LocalMessage m : list) {
             try {
                 msgJson = m.getMsgJson();
                 OrderMsg msg = gson.fromJson(msgJson, OrderMsg.class);
+
                 orderService.sendOrderMsg(msg, true);
             } catch (Exception e) {
-                localMessageService.setRetry(m.getId(), 0);
-                log.error("send message failed,OrderMsg id={}", m.getId());
-                e.printStackTrace();
+                localMessageService.setMessageState(m.getId(), LocalMsgState.RESEND_FAILED);
+                log.error("send message failed,OrderMsg id={}", m.getId(), e);
             }
         }
     }
