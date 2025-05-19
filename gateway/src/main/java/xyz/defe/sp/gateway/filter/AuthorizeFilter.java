@@ -1,7 +1,7 @@
 package xyz.defe.sp.gateway.filter;
 
-import com.google.common.base.Strings;
 import com.google.gson.Gson;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +44,7 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
         if (!startWithAllowPath(path, allowPath)) {
             String token = request.getHeaders().getFirst("Authorization");
             log.debug("token = {}", token);
-            if (Strings.isNullOrEmpty(token)) {
+            if (StringUtils.isBlank(token)) {
                 return getVoidMono(response, HttpStatus.UNAUTHORIZED.value(), "Token is null or empty!");
             }
             try {

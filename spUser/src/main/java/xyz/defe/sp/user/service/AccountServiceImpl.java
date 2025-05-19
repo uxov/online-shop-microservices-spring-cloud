@@ -1,6 +1,6 @@
 package xyz.defe.sp.user.service;
 
-import com.google.common.base.Strings;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import xyz.defe.sp.common.entity.spUser.Account;
@@ -21,7 +21,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account verify(String uname, String pwd) {
-        if (Strings.isNullOrEmpty(uname) || Strings.isNullOrEmpty(pwd)) {
+        if (StringUtils.isBlank(uname) || StringUtils.isBlank(pwd)) {
             ExceptionUtil.warn("uname or pwd is empty");
         }
         return accountDao.findByUnameAndPwd(uname, pwd);

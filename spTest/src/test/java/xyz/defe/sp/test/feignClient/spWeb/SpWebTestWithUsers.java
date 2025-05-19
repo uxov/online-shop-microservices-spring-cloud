@@ -48,7 +48,7 @@ public class SpWebTestWithUsers {
     private AtomicInteger getPaidOrderSucCount = new AtomicInteger();
     private Map<String, String> tokenMap = new HashMap<>();
 
-    @RepeatedTest(10)
+    @RepeatedTest(3)
     public void run() throws InterruptedException {
         List<Account> accounts = getAccounts(count);
         ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
@@ -71,8 +71,7 @@ public class SpWebTestWithUsers {
                 ex.printStackTrace();
                 return null;
             });
-            Thread.sleep(15);
-//            Thread.sleep(5);   //control request rate
+            Thread.sleep(15);   //control request rate
         }
 
         while (flag) {

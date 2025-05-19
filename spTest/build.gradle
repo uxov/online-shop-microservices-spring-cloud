@@ -1,7 +1,7 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '3.3.0'
-	id 'io.spring.dependency-management' version '1.1.5'
+	id 'org.springframework.boot' version '3.4.5'
+	id 'io.spring.dependency-management' version '1.1.7'
 }
 
 group = 'xyz.defe.sp'
@@ -13,7 +13,7 @@ repositories {
 }
 
 ext {
-	set('springCloudVersion', "2023.0.2")
+	set('springCloudVersion', "2024.0.1")
 }
 
 dependencies {
@@ -27,9 +27,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
-	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.1'
-	testImplementation 'org.junit.platform:junit-platform-suite-engine'
 	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+	testImplementation 'org.junit.platform:junit-platform-suite-engine'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}

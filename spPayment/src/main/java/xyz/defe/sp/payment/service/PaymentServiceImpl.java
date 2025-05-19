@@ -1,6 +1,6 @@
 package xyz.defe.sp.payment.service;
 
-import com.google.common.reflect.TypeToken;
+import com.google.gson.reflect.TypeToken;
 import com.google.gson.Gson;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;

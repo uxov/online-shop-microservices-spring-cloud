@@ -1,6 +1,6 @@
 package xyz.defe.sp.order.service;
 
-import com.google.common.reflect.TypeToken;
+import com.google.gson.reflect.TypeToken;
 import com.google.gson.Gson;
 import jakarta.transaction.Transactional;
 import org.redisson.api.RedissonClient;

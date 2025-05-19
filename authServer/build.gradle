@@ -1,7 +1,7 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '3.3.0'
-	id 'io.spring.dependency-management' version '1.1.5'
+	id 'org.springframework.boot' version '3.4.5'
+	id 'io.spring.dependency-management' version '1.1.7'
 	id 'com.bmuschko.docker-spring-boot-application' version '9.4.0'
 }
 
@@ -14,7 +14,7 @@ repositories {
 }
 
 ext {
-	set('springCloudVersion', "2023.0.2")
+	set('springCloudVersion', "2024.0.1")
 }
 
 dependencies {
@@ -45,7 +45,7 @@ tasks.named('test') {
 docker {
 	def registryUrl = 'localhost:5000'
 	springBootApplication {
-		baseImage = 'eclipse-temurin:22-jre-alpine'
+		baseImage = 'eclipse-temurin:24-jre-alpine'
 		ports = [10000]
 		images = ["${registryUrl}/auth-server:0.0.1"]
 		mainClassName = 'xyz.defe.sp.user.AuthserverApplication'

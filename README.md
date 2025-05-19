@@ -11,7 +11,7 @@
 - RabbitMQ
 - RabbitMQ RPC - Request / Reply Pattern
 - JWT
-- Spring Boot 3.3
+- Spring Boot 3.4.5
 - Spring Boot Admin
 
 ## Overview
@@ -30,8 +30,8 @@
 
 ### Requirements
 
-- JDK 22
-- Gradle 8.8
+- JDK 24
+- Gradle 8.14
 - Podman & `podman-compose` (or Docker & `docker cmopose`)
 
 ### Preparation
